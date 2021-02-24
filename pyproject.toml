@@ -12,6 +12,7 @@ pyyaml = "*"
 python-dotenv = "*"
 aiohttp = "*"
 aiodns = "*"
+asyncpg = "*"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "*"
