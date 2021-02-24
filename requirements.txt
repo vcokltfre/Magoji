@@ -1,3 +1,5 @@
 discord.py
 pyyaml
 python-dotenv
+pre-commit
+black
