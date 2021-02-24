@@ -4,6 +4,8 @@ from aiohttp import ClientSession
 from typing import Optional
 from dotenv import load_dotenv
 from os import getenv
+from logging import getLogger, INFO
+from traceback import format_exc
 
 from utilities.database import Database
 
@@ -14,6 +16,9 @@ class Bot(commands.Bot):
     """A subclass of `commands.Bot` with additional features."""
 
     def __init__(self, *args, **kwargs):
+        self.logger = getLogger("magoji")
+        self.logger.setLevel(INFO)
+
         intents = Intents.default()
         intents.members = True
 
@@ -23,6 +28,15 @@ class Bot(commands.Bot):
 
         self.http_session: Optional[ClientSession] = None
         self.db = Database()
+
+    def load_extensions(self, *exts):
+        """Load a set of extensions, autoprefixed by 'cogs.'"""
+        for ext in exts:
+            try:
+                self.load_extension(f"cogs.{ext}")
+                self.logger.info(f"Loaded cog cogs.{ext}")
+            except Exception as e:
+                self.logger.error(f"Failed to load cog: cogs.{ext}: {format_exc()}")
 
     async def login(self, *args, **kwargs) -> None:
         """Create the aiohttp ClientSession before logging in."""
