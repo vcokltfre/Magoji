@@ -1,7 +1,0 @@
-discord.py
-pyyaml
-python-dotenv
-pre-commit
-black
-aiohttp
-aiodns
