@@ -13,6 +13,7 @@ python-dotenv = "*"
 aiohttp = "*"
 aiodns = "*"
 asyncpg = "*"
+jishaku = "*"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "*"

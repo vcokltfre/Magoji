@@ -55,6 +55,9 @@ class Bot(commands.Bot):
 if __name__ == "__main__":
     bot = Bot()
 
-    bot.load_extensions("core.utility")
+    bot.load_extension("jishaku")
+    bot.load_extensions(
+        "core.utility",
+    )
 
     bot.run(getenv("TOKEN"))
