@@ -8,7 +8,10 @@ class Bot(commands.Bot):
     """A subclass of `commands.Bot` with additional features."""
 
     def __init__(self, *args, **kwargs):
-        super().__init__(command_prefix=self.get_prefix, *args, **kwargs)
+        intents = Intents.default()
+        intents.members = True
+
+        super().__init__(command_prefix=self.get_prefix, intents=intents, *args, **kwargs)
 
         self.http_session: Optional[ClientSession] = None
 
