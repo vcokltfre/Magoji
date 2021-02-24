@@ -1,4 +1,5 @@
 from discord.ext import commands
+from discord import Embed
 
 from bot import Bot
 
@@ -16,11 +17,13 @@ class Core(commands.Cog):
     @commands.command(name="info")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.channel)
     async def info(self, ctx: commands.Context):
-        c = f"**__Magoji Status__**\n"
-        c += f"✅ Bot\n"
-        c += f"{self.get_emoji(0.150, self.bot.latency, ':x:', '✅')} Gateway ({round(self.bot.latency * 1000)}ms)"
+        """Get info about Magoji."""
+        desc = f"✅ Bot\n"
+        desc += f"{self.get_emoji(0.150, self.bot.latency, ':x:', '✅')} Gateway ({round(self.bot.latency * 1000)}ms)\n\n"
+        desc += f"Guilds: {len(self.bot.guilds)}"
+        embed = Embed(title="Magoji Status", colour=0x87ceeb, description=desc)
 
-        await ctx.reply(c)
+        await ctx.reply(embed=embed)
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):
