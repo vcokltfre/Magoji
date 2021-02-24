@@ -2,6 +2,10 @@ from discord.ext import commands
 from discord import Intents, Message
 from aiohttp import ClientSession
 from typing import Optional
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 
 class Bot(commands.Bot):
@@ -11,7 +15,9 @@ class Bot(commands.Bot):
         intents = Intents.default()
         intents.members = True
 
-        super().__init__(command_prefix=self.get_prefix, intents=intents, *args, **kwargs)
+        super().__init__(
+            command_prefix=self.get_prefix, intents=intents, *args, **kwargs
+        )
 
         self.http_session: Optional[ClientSession] = None
 
@@ -25,4 +31,10 @@ class Bot(commands.Bot):
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
 
-        return ">" # TODO: Add actual dynamic prefixing
+        return ">"  # TODO: Add actual dynamic prefixing
+
+
+if __name__ == "__main__":
+    bot = Bot()
+
+    bot.run(getenv("TOKEN"))
