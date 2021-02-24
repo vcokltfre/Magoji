@@ -3,3 +3,5 @@ pyyaml
 python-dotenv
 pre-commit
 black
+aiohttp
+aiodns
