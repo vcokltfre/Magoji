@@ -5,6 +5,8 @@ from typing import Optional
 from dotenv import load_dotenv
 from os import getenv
 
+from utilities.database import Database
+
 load_dotenv()
 
 
@@ -20,11 +22,13 @@ class Bot(commands.Bot):
         )
 
         self.http_session: Optional[ClientSession] = None
+        self.db = Database()
 
     async def login(self, *args, **kwargs) -> None:
         """Create the aiohttp ClientSession before logging in."""
 
         self.http_session = ClientSession()
+        await self.db.setup()
 
         await super().login(*args, **kwargs)
 
