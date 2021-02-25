@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands, menus
 from discord.ext.commands import HelpCommand
 
-from bot import Bot
-
 import typing as t
 
 
