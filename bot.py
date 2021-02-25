@@ -8,6 +8,7 @@ from logging import getLogger, INFO
 from traceback import format_exc
 
 from utilities.database import Database
+from utilities.help import Help
 
 load_dotenv()
 
@@ -19,11 +20,10 @@ class Bot(commands.Bot):
         self.logger = getLogger("magoji")
         self.logger.setLevel(INFO)
 
-        intents = Intents.default()
-        intents.members = True
+        intents = Intents.all()
 
         super().__init__(
-            command_prefix=self.get_prefix, intents=intents, *args, **kwargs
+            command_prefix=self.get_prefix, intents=intents, help_command=Help(), *args, **kwargs
         )
 
         self.http_session: Optional[ClientSession] = None
@@ -38,6 +38,7 @@ class Bot(commands.Bot):
             except Exception as e:
                 self.logger.error(f"Failed to load cog: cogs.{ext}: {format_exc()}")
 
+
     async def login(self, *args, **kwargs) -> None:
         """Create the aiohttp ClientSession before logging in."""
 
@@ -45,6 +46,7 @@ class Bot(commands.Bot):
         await self.db.setup()
 
         await super().login(*args, **kwargs)
+
 
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
@@ -58,6 +60,8 @@ if __name__ == "__main__":
     bot.load_extension("jishaku")
     bot.load_extensions(
         "core.utility",
+        "utility.info"
+        #"utility.tokens",
     )
 
     bot.run(getenv("TOKEN"))
