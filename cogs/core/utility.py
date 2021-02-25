@@ -21,7 +21,7 @@ class Core(commands.Cog):
         desc = f"✅ Bot\n"
         desc += f"{self.get_emoji(0.150, self.bot.latency, ':x:', '✅')} Gateway ({round(self.bot.latency * 1000)}ms)\n\n"
         desc += f"Guilds: {len(self.bot.guilds)}"
-        embed = Embed(title="Magoji Status", colour=0x87ceeb, description=desc)
+        embed = Embed(title="Magoji Status", colour=0x87CEEB, description=desc)
 
         await ctx.reply(embed=embed)
 
@@ -37,5 +37,13 @@ class Core(commands.Cog):
         self.bot.logger.info("Bot is ready.")
 
 
+class Help(commands.Cog):
+    """Give help for this bot's commands."""
+
+    def __init__(self, bot):
+        bot.help_command.cog = self
+
+
 def setup(bot: Bot):
     bot.add_cog(Core(bot))
+    bot.add_cog(Help(bot))
