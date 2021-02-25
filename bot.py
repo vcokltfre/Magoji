@@ -8,6 +8,7 @@ from logging import getLogger, INFO
 from traceback import format_exc
 
 from utilities.database import Database
+from utilities.help import Help
 
 load_dotenv()
 
@@ -22,7 +23,7 @@ class Bot(commands.Bot):
         intents = Intents.all()
 
         super().__init__(
-            command_prefix=self.get_prefix, intents=intents, *args, **kwargs
+            command_prefix=self.get_prefix, intents=intents, help_command=Help(), *args, **kwargs
         )
 
         self.http_session: Optional[ClientSession] = None

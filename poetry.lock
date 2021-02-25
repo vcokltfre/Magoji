@@ -118,6 +118,24 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "discord-ext-menus"
+version = "1.0.0a29+g4429b56"
+description = "An extension module to make reaction based menus with discord.py"
+category = "main"
+optional = false
+python-versions = ">=3.5.3"
+develop = false
+
+[package.dependencies]
+"discord.py" = ">=1.2.5"
+
+[package.source]
+type = "git"
+url = "https://github.com/Rapptz/discord-ext-menus.git"
+reference = "master"
+resolved_reference = "4429b564fd8f031deaccd60caa5be7320e248816"
+
+[[package]]
 name = "discord.py"
 version = "1.6.0"
 description = "A Python wrapper for the Discord API"
@@ -342,7 +360,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bfdd43a21d590678432f0e2ee02597651e8c781309ec6012b675b83c409acda5"
+content-hash = "5c9ff38445ff56c749499846e64276f72dcdd8714e7398ad798746d3013742db"
 
 [metadata.files]
 aiodns = [
@@ -472,6 +490,7 @@ chardet = [
     {file = "chardet-3.0.4-py2.py3-none-any.whl", hash = "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"},
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
 ]
+discord-ext-menus = []
 "discord.py" = [
     {file = "discord.py-1.6.0-py3-none-any.whl", hash = "sha256:3df148daf6fbcc7ab5b11042368a3cd5f7b730b62f09fb5d3cbceff59bcfbb12"},
     {file = "discord.py-1.6.0.tar.gz", hash = "sha256:ba8be99ff1b8c616f7b6dcb700460d0222b29d4c11048e74366954c465fdd05f"},
