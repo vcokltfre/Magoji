@@ -32,6 +32,11 @@ class Database:
     async def create_guild(self, id: int, prefix: str = ">"):
         await self.execute("INSERT INTO Guilds (id, prefix) VALUES ($1, $2);", id, prefix)
 
+    async def update_guild_prefix(self, id: int, prefix: str):
+        if not await self.fetch_guild(id):
+            return await self.create_guild(id, prefix)
+        await self.execute("UPDATE Guilds SET prefix = $1 WHERE id = $2;", prefix, id)
+
     async def fetch_guild(self, id: int):
         if id in self.guilds:
             return self.guilds[id]
