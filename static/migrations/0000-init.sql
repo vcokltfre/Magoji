@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Users (
 
 CREATE TABLE IF NOT EXISTS Cases (
     id              BIGINT NOT NULL PRIMARY KEY,
+    guildid         BIGINT NOT NULL,
     userid          BIGINT NOT NULL,
     modid           BIGINT NOT NULL,
     username        VARCHAR(255) NOT NULL,
