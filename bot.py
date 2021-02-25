@@ -50,7 +50,7 @@ class Bot(commands.Bot):
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
 
-        return ">uwu "  # TODO: Add actual dynamic prefixing
+        return ">"  # TODO: Add actual dynamic prefixing
 
 
 if __name__ == "__main__":
