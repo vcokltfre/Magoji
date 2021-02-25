@@ -51,7 +51,15 @@ class Bot(commands.Bot):
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
 
-        return ">"  # TODO: Add actual dynamic prefixing
+        if not message.guild:
+            return ">"
+
+        guild_config = await self.db.fetch_guild(message.guild.id)
+
+        if not guild_config:
+            return ">"
+
+        return guild_config[1]
 
 
 if __name__ == "__main__":
