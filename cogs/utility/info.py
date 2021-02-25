@@ -11,10 +11,7 @@ class AllInfo(commands.Cog):
 
     @commands.command(name='guild', aliases=['server'])
     async def _guild(self, ctx):
-        """Sends information on the guild the command was invoked in."""
-
-        # TODO: Add docstring
-
+        """Sends a guild info embed for the guild the command was invoked in."""
         guild = ctx.guild
         owner = guild.owner
         created = guild.created_at.strftime(
