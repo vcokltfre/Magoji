@@ -16,7 +16,7 @@ class HelpMenu(menus.Menu):
 
     async def should_add_reactions(self):
         """Whether to add reactions to this menu session."""
-        return self.pages
+        return len(self.pages) > 1
 
     async def send_initial_message(
         self, ctx: commands.Context, channel: discord.abc.Messageable
@@ -89,6 +89,7 @@ class HelpMenu(menus.Menu):
     async def on_waste_bucket(self, payload: discord.RawReactionActionEvent):
         """A method to stop the help session."""
         self.stop()
+        await self.message.delete()
 
     @classmethod
     def make_pages(cls, embed: discord.Embed, max_embeds: int, **options):
@@ -132,7 +133,7 @@ class Help(HelpCommand):
                     name=cog_name, value="\n".join(command_signatures), inline=False
                 )
 
-        menu = HelpMenu.make_pages(embed, 5)#, remove_reactions_after=True)
+        menu = HelpMenu.make_pages(embed, 5, clear_reactions_after=True)
         await menu.start(self.context, wait=True)
 
     async def send_command_help(self, command: commands.Command):
