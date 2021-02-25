@@ -132,7 +132,7 @@ class Help(HelpCommand):
                     name=cog_name, value="\n".join(command_signatures), inline=False
                 )
 
-        menu = HelpMenu.make_pages(embed, 5, remove_reactions_after=True)
+        menu = HelpMenu.make_pages(embed, 5)#, remove_reactions_after=True)
         await menu.start(self.context, wait=True)
 
     async def send_command_help(self, command: commands.Command):
