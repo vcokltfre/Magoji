@@ -68,7 +68,8 @@ if __name__ == "__main__":
     bot.load_extension("jishaku")
     bot.load_extensions(
         "core.utility",
-        "utility.info"
+        "core.config",
+        "utility.info",
         #"utility.tokens",
     )
 
