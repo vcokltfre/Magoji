@@ -35,6 +35,9 @@ class Database:
     async def update_guild_prefix(self, id: int, prefix: str):
         if not await self.fetch_guild(id):
             return await self.create_guild(id, prefix)
+
+        if id in self.guilds:
+            del self.guilds[id]
         await self.execute("UPDATE Guilds SET prefix = $1 WHERE id = $2;", prefix, id)
 
     async def fetch_guild(self, id: int):
