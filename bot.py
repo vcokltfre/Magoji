@@ -37,6 +37,7 @@ class Bot(commands.Bot):
             except Exception as e:
                 self.logger.error(f"Failed to load cog: cogs.{ext}: {format_exc()}")
 
+
     async def login(self, *args, **kwargs) -> None:
         """Create the aiohttp ClientSession before logging in."""
 
@@ -44,6 +45,7 @@ class Bot(commands.Bot):
         await self.db.setup()
 
         await super().login(*args, **kwargs)
+
 
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
@@ -57,6 +59,7 @@ if __name__ == "__main__":
     bot.load_extension("jishaku")
     bot.load_extensions(
         "core.utility",
+        'utility.info'
         #"utility.tokens",
     )
 
