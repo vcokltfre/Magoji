@@ -25,3 +25,9 @@ class Database:
     async def fetch(self, query: str, *args):
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, *args)
+
+    async def create_guild(self, id: int, prefix: str = ">"):
+        await self.execute("INSERT INTO Guilds (id, prefix) VALUES ($1, $2);", id, prefix)
+
+    async def fetch_guild(self, id: int):
+        return await self.fetchrow("SELECT * FROM Guilds WHERE id = $1;", id)
