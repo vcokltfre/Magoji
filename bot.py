@@ -19,8 +19,7 @@ class Bot(commands.Bot):
         self.logger = getLogger("magoji")
         self.logger.setLevel(INFO)
 
-        intents = Intents.default()
-        intents.members = True
+        intents = Intents.all()
 
         super().__init__(
             command_prefix=self.get_prefix, intents=intents, *args, **kwargs
