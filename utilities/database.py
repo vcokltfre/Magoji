@@ -5,6 +5,9 @@ from os import getenv
 class Database:
     """A database interface for the bot to connect to Postgres."""
 
+    def __init__(self):
+        self.guilds = {}
+
     async def setup(self):
         self.pool = await create_pool(
             host=getenv("DB_HOST", "127.0.0.1"),
@@ -29,5 +32,18 @@ class Database:
     async def create_guild(self, id: int, prefix: str = ">"):
         await self.execute("INSERT INTO Guilds (id, prefix) VALUES ($1, $2);", id, prefix)
 
+    async def update_guild_prefix(self, id: int, prefix: str):
+        if not await self.fetch_guild(id):
+            return await self.create_guild(id, prefix)
+
+        if id in self.guilds:
+            del self.guilds[id]
+        await self.execute("UPDATE Guilds SET prefix = $1 WHERE id = $2;", prefix, id)
+
     async def fetch_guild(self, id: int):
-        return await self.fetchrow("SELECT * FROM Guilds WHERE id = $1;", id)
+        if id in self.guilds:
+            return self.guilds[id]
+
+        data = await self.fetchrow("SELECT * FROM Guilds WHERE id = $1;", id)
+        self.guilds[id] = data
+        return data

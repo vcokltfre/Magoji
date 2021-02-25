@@ -20,9 +20,6 @@ class AllInfo(commands.Cog):
     @commands.command(name='guild', aliases=['server'])
     async def _guild(self, ctx):
         """Sends information on the guild the command was invoked in."""
-
-        # TODO: Add comments
-
         guild = ctx.guild
         owner = guild.owner
         created = self.convert_date(guild.created_at)

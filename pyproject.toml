@@ -14,6 +14,7 @@ aiohttp = "*"
 aiodns = "*"
 asyncpg = "*"
 jishaku = "*"
+discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus.git"}
 
 [tool.poetry.dev-dependencies]
 pre-commit = "*"

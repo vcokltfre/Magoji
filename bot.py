@@ -8,6 +8,7 @@ from logging import getLogger, INFO
 from traceback import format_exc
 
 from utilities.database import Database
+from utilities.help import Help
 
 load_dotenv()
 
@@ -22,7 +23,7 @@ class Bot(commands.Bot):
         intents = Intents.all()
 
         super().__init__(
-            command_prefix=self.get_prefix, intents=intents, *args, **kwargs
+            command_prefix=self.get_prefix, intents=intents, help_command=Help(), *args, **kwargs
         )
 
         self.http_session: Optional[ClientSession] = None
@@ -50,7 +51,15 @@ class Bot(commands.Bot):
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
 
-        return ">"  # TODO: Add actual dynamic prefixing
+        if not message.guild:
+            return ">"
+
+        guild_config = await self.db.fetch_guild(message.guild.id)
+
+        if not guild_config:
+            return ">"
+
+        return guild_config[1]
 
 
 if __name__ == "__main__":
@@ -59,7 +68,8 @@ if __name__ == "__main__":
     bot.load_extension("jishaku")
     bot.load_extensions(
         "core.utility",
-        'utility.info'
+        "core.config",
+        "utility.info",
         #"utility.tokens",
     )
 
