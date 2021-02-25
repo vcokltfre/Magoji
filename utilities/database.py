@@ -1,5 +1,4 @@
 from asyncpg import create_pool
-from asyncio import get_event_loop
 from os import getenv
 
 
@@ -14,3 +13,15 @@ class Database:
             user=getenv("DB_USER", "root"),
             password=getenv("DB_PASS", "password"),
         )
+
+    async def execute(self, query: str, *args):
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, *args)
+
+    async def fetchrow(self, query: str, *args):
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, *args)
+
+    async def fetch(self, query: str, *args):
+        async with self.pool.acquire() as conn:
+            return await conn.fetch(query, *args)
