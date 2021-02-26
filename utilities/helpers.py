@@ -53,29 +53,6 @@ class EmbedHelper(discord.Embed):
         if thumbnail_url:
             self.set_thumbnail(url=thumbnail_url)
 
-        '''
-        if isinstance(fields, list):
-            for field in fields:
-
-                try:
-                    for name, value, inline in field.values():
-                        self.add_field(name=name, value=value, inline=inline)
-                except ValueError:
-                    for name, value in field.values():
-                        self.add_field(name=name, value=value)
-
-        elif isinstance(fields, dict):
-            try:
-
-                for name, value, inline in fields.values():
-                    self.add_field(name=name, value=value, inline=inline)
-
-                    self.add_field(name=name, value=value, inline=inline)
-            except ValueError:
-
-                for name, value in fields.values():
-                    self.add_field(name=name, value=value)
-        '''
 
         if isinstance(fields, list):
             for field in fields:
