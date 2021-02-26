@@ -1,7 +1,7 @@
 from discord.ext import commands
 from discord import Embed
 
-from bot import Bot
+from internal.bot import Bot
 
 
 class Core(commands.Cog):
