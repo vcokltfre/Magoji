@@ -22,13 +22,13 @@ class EmbedHelper(discord.Embed):
 
         super().__init__()
 
-        self.title = title
+        self.title = title or self.Empty
 
-        self.description = description
+        self.description = description or self.Empty
 
         self.colour = colour or 0x87ceeb
 
-        self.timestamp = timestamp
+        self.timestamp = timestamp or self.Empty
 
         if footer_url or footer_text:
             if footer_url and footer_text:
