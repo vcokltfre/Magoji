@@ -14,7 +14,7 @@ class HelpMenu(menus.Menu):
         self.title = pages[0].title
         super().__init__(**kwargs)
 
-    async def should_add_reactions(self):
+    def should_add_reactions(self):
         """Whether to add reactions to this menu session."""
         return len(self.pages) > 1
 
