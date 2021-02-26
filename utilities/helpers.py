@@ -2,7 +2,7 @@ import discord
 from discord import Colour
 from datetime import datetime
 
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 
 class EmbedHelper(discord.Embed):
@@ -16,7 +16,7 @@ class EmbedHelper(discord.Embed):
                  image_url: Optional[str] = None,
                  footer_text: Optional[str] = None,
                  timestamp: Optional[datetime] = None,
-                 fields: Optional[Union[list[dict], list[tuple], dict, tuple]] = None):
+                 fields: Optional[Union[List[dict], List[tuple], dict, tuple]] = None):
 
         # TODO: ADD DOCSTRING
 
