@@ -25,7 +25,11 @@ class Bot(commands.Bot):
         intents = Intents.all()
 
         super().__init__(
-            command_prefix=self.get_prefix, intents=intents, help_command=Help(), *args, **kwargs
+            command_prefix=self.get_prefix,
+            intents=intents,
+            help_command=Help(),
+            *args,
+            **kwargs,
         )
 
         self.http_session: Optional[ClientSession] = None
@@ -40,7 +44,6 @@ class Bot(commands.Bot):
             except Exception as e:
                 self.logger.error(f"Failed to load cog: cogs.{ext}: {format_exc()}")
 
-
     async def login(self, *args, **kwargs) -> None:
         """Create the aiohttp ClientSession before logging in."""
 
@@ -48,7 +51,6 @@ class Bot(commands.Bot):
         await self.db.setup()
 
         await super().login(*args, **kwargs)
-
 
     async def get_prefix(self, message: Message) -> str:
         """Get a dynamic prefix for the bot."""
@@ -66,6 +68,7 @@ class Bot(commands.Bot):
     async def get_context(self, message: Message):
         return await super().get_context(message, cls=Context)
 
+
 if __name__ == "__main__":
     bot = Bot()
 
@@ -74,7 +77,7 @@ if __name__ == "__main__":
         "core.utility",
         "core.config",
         "utility.info",
-        #"utility.tokens",
+        # "utility.tokens",
     )
 
     bot.run(getenv("TOKEN"))

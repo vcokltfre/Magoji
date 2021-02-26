@@ -1,6 +1,7 @@
 from discord.ext.commands import check, Context
 from json import loads
 
+
 def command_enabled(command: str):
     async def predicate(ctx: Context):
         if not ctx.guild:

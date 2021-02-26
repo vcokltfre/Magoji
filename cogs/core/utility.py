@@ -1,5 +1,8 @@
 from discord.ext import commands
 from discord import Embed
+from os import getenv, getpid
+from git import Repo
+import psutil
 
 from internal.bot import Bot
 
@@ -9,6 +12,16 @@ class Core(commands.Cog):
 
     def __init__(self, bot: Bot):
         self.bot = bot
+
+    @staticmethod
+    def format_bytes(size):
+        power = 2 ** 10
+        n = 0
+        power_labels = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
+        while size > power:
+            size /= power
+            n += 1
+        return f"{round(size, 3)}{power_labels[n]+'B'}"
 
     @staticmethod
     def get_emoji(upper: float, value: float, above: str, below: str):
@@ -24,6 +37,24 @@ class Core(commands.Cog):
         embed = Embed(title="Magoji Status", colour=0x87CEEB, description=desc)
 
         await ctx.reply(embed=embed)
+
+    @commands.command(name="debug")
+    @commands.is_owner()
+    async def debug(self, ctx: commands.Context):
+        """Get debug info about Magoji."""
+
+        env = getenv("ENV", "dev")
+        repo = Repo(".")
+        commit = str(repo.head.commit)[:7]
+        process = psutil.Process(getpid())
+
+        mem = self.format_bytes(process.memory_info().rss)
+
+        desc = f"Environment: {env}\nCommit: {commit}\nPID: {getpid()}\nMemory: {mem}"
+
+        embed = Embed(title="Magoji Debug", colour=0x87CEEB, description=desc)
+
+        await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):

@@ -14,7 +14,7 @@ class HelpMenu(menus.Menu):
         self.title = pages[0].title
         super().__init__(**kwargs)
 
-    async def should_add_reactions(self):
+    def should_add_reactions(self):
         """Whether to add reactions to this menu session."""
         return len(self.pages) > 1
 
@@ -123,9 +123,7 @@ class Help(HelpCommand):
 
             list_commands = await self.filter_commands(list_commands, sort=True)
 
-            command_signatures = [
-                self.get_command_signature(c) for c in list_commands
-            ]
+            command_signatures = [self.get_command_signature(c) for c in list_commands]
 
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "Other Commands")
@@ -175,9 +173,7 @@ class Help(HelpCommand):
             description=group.help or "No help for this command.",
             colour=0x9B2335,
         )
-        group_commands = ", ".join(
-            f"`{command.name}`" for command in group.commands
-        )
+        group_commands = ", ".join(f"`{command.name}`" for command in group.commands)
         embed.add_field(name=f"{group.name}'s subcommands", value=group_commands)
 
         if group.aliases:

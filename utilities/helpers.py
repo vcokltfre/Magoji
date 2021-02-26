@@ -2,33 +2,37 @@ import discord
 from discord import Colour
 from datetime import datetime
 
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 
 class EmbedHelper(discord.Embed):
-    def __init__(self, *, title: Optional[str] = None,
-                 description: Optional[str] = None,
-                 colour: Optional[Union[Colour, int]] = None,
-                 thumbnail_url: Optional[str] = None,
-                 author_url: Optional[str] = None,
-                 author_name: Optional[str] = None,
-                 footer_url: Optional[str] = None,
-                 image_url: Optional[str] = None,
-                 footer_text: Optional[str] = None,
-                 timestamp: Optional[datetime] = None,
-                 fields: Optional[Union[list[dict], list[tuple], dict, tuple]] = None):
+    def __init__(
+        self,
+        *,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        colour: Optional[Union[Colour, int]] = None,
+        thumbnail_url: Optional[str] = None,
+        author_url: Optional[str] = None,
+        author_name: Optional[str] = None,
+        footer_url: Optional[str] = None,
+        image_url: Optional[str] = None,
+        footer_text: Optional[str] = None,
+        timestamp: Optional[datetime] = None,
+        fields: Optional[Union[List[dict], List[tuple], dict, tuple]] = None,
+    ):
 
         # TODO: ADD DOCSTRING
 
         super().__init__()
 
-        self.title = title
+        self.title = title or self.Empty
 
-        self.description = description
+        self.description = description or self.Empty
 
-        self.colour = colour or 0x87ceeb
+        self.colour = colour or 0x87CEEB
 
-        self.timestamp = timestamp
+        self.timestamp = timestamp or self.Empty
 
         if footer_url or footer_text:
             if footer_url and footer_text:
@@ -52,7 +56,6 @@ class EmbedHelper(discord.Embed):
                     self.set_author(name=author_name)
         if thumbnail_url:
             self.set_thumbnail(url=thumbnail_url)
-
 
         if isinstance(fields, list):
             for field in fields:
@@ -85,5 +88,4 @@ class EmbedHelper(discord.Embed):
 def convert_date(date: datetime):
     # TODO: Add docstring
 
-    return date.strftime(
-        f"%A, %B %-d, %Y at %-I:%M {('A', 'P')[date == 0]}M UTC")
+    return date.strftime(f"%A, %B %-d, %Y at %-I:%M {('A', 'P')[date == 0]}M UTC")

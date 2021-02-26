@@ -39,8 +39,10 @@ class Context(_BaseContext):
             await message.edit(embed=prompt)
         else:
             message = await self.send(embed=prompt)
-        
-        emoji_set = set()   # casting to string for easier comparison in the check function.
+
+        emoji_set = (
+            set()
+        )  # casting to string for easier comparison in the check function.
         for emoji in emojis:
             await message.add_reaction(emoji)
             emoji_set.add(str(emoji))
@@ -48,7 +50,11 @@ class Context(_BaseContext):
         def check(
             reaction: discord.Reaction, user: Union[discord.Member, discord.User]
         ) -> bool:
-            return reaction.message == message and str(reaction) in emoji_set and user == self.author
+            return (
+                reaction.message == message
+                and str(reaction) in emoji_set
+                and user == self.author
+            )
 
         try:
             reaction, _ = await self.bot.wait_for(
@@ -56,5 +62,7 @@ class Context(_BaseContext):
             )
             yield reaction
         finally:
-            if not isinstance(message.channel, discord.DMChannel):  # clearing reactions in DMs raises Forbidden
+            if not isinstance(
+                message.channel, discord.DMChannel
+            ):  # clearing reactions in DMs raises Forbidden
                 await message.clear_reactions()

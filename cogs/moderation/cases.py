@@ -15,7 +15,7 @@ class Cases(commands.Cog):
     def chunks(lst, n):
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
-            yield lst[i:i + n]
+            yield lst[i : i + n]
 
     def cases_embeds(self, name: str, prefix: str, cases) -> List[Embed]:
         """Generate a chunked list of embeds of a user's cases."""
@@ -27,15 +27,23 @@ class Cases(commands.Cog):
             case_date = str(case["created_at"]).split()[0]
 
             case_data = case["case_data"]
-            case_summary = (case_data[:64] + "...") if len(case_data) > 64 else case_data
-            formatted_cases.append(f"`{case_type}` `{case_date}` `{case_id}` {case_summary}")
+            case_summary = (
+                (case_data[:64] + "...") if len(case_data) > 64 else case_data
+            )
+            formatted_cases.append(
+                f"`{case_type}` `{case_date}` `{case_id}` {case_summary}"
+            )
 
         embeds = []
 
-        for i, chunk in enumerate(self.chunks(formatted_cases,10)):
+        for i, chunk in enumerate(self.chunks(formatted_cases, 10)):
             desc = "\n".join(chunk)
             desc += f"\n\nUse `{prefix}case <num>` for more information about a specific case."
-            embed = Embed(title=f"Cases for {name} | Page {i + 1}", colour=0x87ceeb, description=desc)
+            embed = Embed(
+                title=f"Cases for {name} | Page {i + 1}",
+                colour=0x87CEEB,
+                description=desc,
+            )
             embeds.append(embed)
 
         return embeds
