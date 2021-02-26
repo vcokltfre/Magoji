@@ -10,7 +10,7 @@ from traceback import format_exc
 from utilities.database import Database
 from utilities.help import Help
 
-from context import Context
+from .context import Context
 
 load_dotenv()
 
