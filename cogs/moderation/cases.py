@@ -2,7 +2,7 @@ from discord.ext import commands
 from discord import Member, User, Embed
 from typing import Union, List
 
-from bot import Bot
+from internal.bot import Bot
 
 
 class Cases(commands.Cog):
