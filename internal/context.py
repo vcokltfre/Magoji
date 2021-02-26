@@ -29,7 +29,7 @@ class Context(_BaseContext):
         """Starts a reaction menu.
         Arguments ::
             All arguments are keyword-only.
-            `message_obj` -> The message object that will be edited to `prompt`. If None, a new message is sent.
+            `message` -> The message object that will be edited to `prompt`. If None, a new message is sent.
             `prompt` -> Embed containing the prompt question.
             `emojis` -> Set of emojis that will be added as reactions.
         Yields ::
