@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Tags (
     name            VARCHAR(256) NOT NULL,
     guildid         BIGINT NOT NULL,
     content         TEXT,
-    PRIMARY KEY (name, guild_id)
+    PRIMARY KEY (name, guildid)
 );
 
 CREATE TABLE IF NOT EXISTS Todos (

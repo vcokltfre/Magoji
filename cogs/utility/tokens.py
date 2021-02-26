@@ -2,7 +2,7 @@ from discord.ext import commands
 from discord import Message, DMChannel
 from re import compile, ASCII
 
-from bot import Bot
+from internal.bot import Bot
 from utilities.gist import create
 
 TOKEN_RE = compile(r"([\w\-=]+)\.([\w\-=]+)\.([\w\-=]+)", ASCII)

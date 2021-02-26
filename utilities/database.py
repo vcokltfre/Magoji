@@ -47,3 +47,6 @@ class Database:
         data = await self.fetchrow("SELECT * FROM Guilds WHERE id = $1;", id)
         self.guilds[id] = data
         return data
+
+    async def fetch_cases(self, userid: int, guildid: int):
+        return await self.fetch("SELECT * FROM Cases WHERE userid = $1 AND guildid = $2 ORDER BY created_at;", userid, guildid)

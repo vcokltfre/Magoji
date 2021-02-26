@@ -10,6 +10,8 @@ from traceback import format_exc
 from utilities.database import Database
 from utilities.help import Help
 
+from .context import Context
+
 load_dotenv()
 
 
@@ -61,6 +63,8 @@ class Bot(commands.Bot):
 
         return guild_config[1]
 
+    async def get_context(self, message: Message):
+        return await super().get_context(message, cls=Context)
 
 if __name__ == "__main__":
     bot = Bot()
