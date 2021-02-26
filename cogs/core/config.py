@@ -1,7 +1,7 @@
 from discord.ext import commands
 from typing import Optional
 
-from bot import Bot
+from internal.bot import Bot
 
 
 class Config(commands.Cog):
