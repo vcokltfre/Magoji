@@ -5,7 +5,7 @@ from datetime import datetime
 import textwrap
 from typing import Union, Tuple
 from types import ModuleType
-from inspect import getsourcelines, getsourcefile
+from inspect import getsourcelines, getsourcefile, getsource
 from pathlib import Path
 
 GITHUB_REPO_URL = "https://github.com/vcokltfre/Magoji"
@@ -154,7 +154,8 @@ class AllInfo(commands.Cog):
 
     @source.command()
     async def code(self, ctx: commands.Context, *, source_item: SourceConverter):
-        source = self.get_source_code(source_item)[1]
+        source = self.get_source_code(source_item)[0]
+        source = '\n'.join(source)
         source_name = getattr(source_item, 'name', False) or getattr(source_item, '__name__')
         escaped = source.replace('```', '`\u200b' * 3)
         embed = discord.Embed(title=f'Source Code for `{source_name}`',
@@ -164,7 +165,7 @@ class AllInfo(commands.Cog):
 
     def get_source_code(self, source_item: Union[commands.Command, commands.Cog, ModuleType]) -> Tuple[str, int]:
         if isinstance(source_item, (commands.Cog, ModuleType)):
-            source = getsourcelines(source_item)[0]
+            source = getsourcelines(source_item)
         elif isinstance(source_item, commands.Command):
             source = getsourcelines(source_item.callback)
 
