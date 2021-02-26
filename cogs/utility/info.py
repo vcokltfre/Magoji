@@ -5,7 +5,7 @@ from datetime import datetime
 import textwrap
 from typing import Union, Tuple
 from types import ModuleType
-from inspect import getsourcelines, getsourcefile, getsource
+from inspect import getsourcelines, getsourcefile
 from pathlib import Path
 
 GITHUB_REPO_URL = "https://github.com/vcokltfre/Magoji"
