@@ -30,7 +30,9 @@ class Database:
             return await conn.fetch(query, *args)
 
     async def create_guild(self, id: int, prefix: str = ">"):
-        await self.execute("INSERT INTO Guilds (id, prefix) VALUES ($1, $2);", id, prefix)
+        await self.execute(
+            "INSERT INTO Guilds (id, prefix) VALUES ($1, $2);", id, prefix
+        )
 
     async def update_guild_prefix(self, id: int, prefix: str):
         if not await self.fetch_guild(id):
@@ -49,4 +51,8 @@ class Database:
         return data
 
     async def fetch_cases(self, userid: int, guildid: int):
-        return await self.fetch("SELECT * FROM Cases WHERE userid = $1 AND guildid = $2 ORDER BY created_at;", userid, guildid)
+        return await self.fetch(
+            "SELECT * FROM Cases WHERE userid = $1 AND guildid = $2 ORDER BY created_at;",
+            userid,
+            guildid,
+        )

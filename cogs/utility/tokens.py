@@ -36,12 +36,19 @@ class Core(commands.Cog):
             return
 
         await message.delete()
-        await message.channel.send(f"Oh no {message.author.mention}! It looks like you posted your bot token in chat, so I'm resetting it.")
+        await message.channel.send(
+            f"Oh no {message.author.mention}! It looks like you posted your bot token in chat, so I'm resetting it."
+        )
         token = result.group()
 
         text = f"## Your token was found in a message in {message.guild}:\n{message.content}\n\n\nToken found: {token}"
 
-        result = await create(self.bot.http_session, "tokenleak.md", "Your token was found in a message.", text)
+        result = await create(
+            self.bot.http_session,
+            "tokenleak.md",
+            "Your token was found in a message.",
+            text,
+        )
         print(result)
 
 

@@ -11,7 +11,9 @@ class Config(commands.Cog):
         self.bot = bot
 
     @commands.command(name="prefix")
-    @commands.check_any(commands.has_permissions(manage_guild=True), commands.is_owner())
+    @commands.check_any(
+        commands.has_permissions(manage_guild=True), commands.is_owner()
+    )
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.guild)
     async def prefix(self, ctx: commands.Context, *, p: Optional[str]):
         """Change Magoji's perfix per guild"""
