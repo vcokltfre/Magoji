@@ -3,7 +3,7 @@ from discord import Member, User, Embed
 from typing import Union, List
 
 from internal.bot import Bot
-
+from internal.context import Context
 
 class Cases(commands.Cog):
     """Moderation cases commands for Magoji."""
@@ -52,7 +52,7 @@ class Cases(commands.Cog):
     @commands.has_guild_permissions(manage_messages=True)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.guild_only()
-    async def cases(self, ctx: commands.Context, member: Union[User, Member, int]):
+    async def cases(self, ctx: Context, member: Union[User, Member, int]):
         """Get moderation cases for a user."""
         if isinstance(member, (User, Member)):
             member = member.id
