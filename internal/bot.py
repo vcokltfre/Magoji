@@ -41,7 +41,7 @@ class Bot(commands.Bot):
             try:
                 self.load_extension(f"cogs.{ext}")
                 self.logger.info(f"Loaded cog cogs.{ext}")
-            except Exception as e:
+            except Exception:
                 self.logger.error(f"Failed to load cog: cogs.{ext}: {format_exc()}")
 
     async def login(self, *args, **kwargs) -> None:
