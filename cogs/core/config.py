@@ -2,7 +2,7 @@ from discord.ext import commands
 from typing import Optional
 
 from internal.bot import Bot
-
+from internal.context import Context
 
 class Config(commands.Cog):
     """Bot configuration commands for Magoji."""
@@ -15,7 +15,7 @@ class Config(commands.Cog):
         commands.has_permissions(manage_guild=True), commands.is_owner()
     )
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.guild)
-    async def prefix(self, ctx: commands.Context, *, p: Optional[str]):
+    async def prefix(self, ctx: Context, *, p: Optional[str]):
         """Change Magoji's perfix per guild"""
         if not p:
             return await ctx.send_help(ctx.invoked_with)

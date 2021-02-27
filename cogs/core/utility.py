@@ -5,7 +5,7 @@ from git import Repo
 import psutil
 
 from internal.bot import Bot
-
+from internal.context import Context
 
 class Core(commands.Cog):
     """A set of core commands for Magoji."""
@@ -29,7 +29,7 @@ class Core(commands.Cog):
 
     @commands.command(name="info")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.channel)
-    async def info(self, ctx: commands.Context):
+    async def info(self, ctx: Context):
         """Get info about Magoji."""
         desc = f"✅ Bot\n"
         desc += f"{self.get_emoji(0.150, self.bot.latency, ':x:', '✅')} Gateway ({round(self.bot.latency * 1000)}ms)\n\n"
@@ -40,7 +40,7 @@ class Core(commands.Cog):
 
     @commands.command(name="debug")
     @commands.is_owner()
-    async def debug(self, ctx: commands.Context):
+    async def debug(self, ctx: Context):
         """Get debug info about Magoji."""
 
         env = getenv("ENV", "dev")
@@ -57,7 +57,7 @@ class Core(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: commands.Context):
+    async def on_command_completion(self, ctx: Context):
         """Make sure that bot owners are always exempt from cooldowns."""
         if await self.bot.is_owner(ctx.author):
             ctx.command.reset_cooldown(ctx)

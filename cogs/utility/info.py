@@ -10,6 +10,7 @@ from inspect import getsourcelines, getsourcefile
 from pathlib import Path
 
 from utilities.helpers import EmbedHelper, convert_date
+from internal.context import Context
 
 GITHUB_REPO_URL = "https://github.com/vcokltfre/Magoji"
 
@@ -17,7 +18,7 @@ class SourceConverter(commands.Converter):
     """A Converter that converts a string to a Command, Cog or Extension."""
 
     async def convert(
-        self, ctx: commands.Context, argument: str
+        self, ctx: Context, argument: str
     ) -> Union[commands.Command, commands.Cog, ModuleType]:
         if command := ctx.bot.get_command(argument):
             if command.name == "help":
@@ -39,7 +40,7 @@ class AllInfo(commands.Cog):
 
     @commands.command(name='guild', aliases=['server'])
     @commands.guild_only()
-    async def _guild(self, ctx: commands.Context):
+    async def _guild(self, ctx: Context):
         """Sends information on the guild the command was invoked in."""
         guild = ctx.guild
         owner = guild.owner
@@ -113,7 +114,7 @@ class AllInfo(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='user', aliases=['member'])
-    async def _user(self, ctx: commands.Context, user: Union[discord.Member, discord.User] = None):
+    async def _user(self, ctx: Context, user: Union[discord.Member, discord.User] = None):
         """Sends info related to the user."""
 
         # TODO: Add comments
@@ -144,7 +145,7 @@ class AllInfo(commands.Cog):
 
     @commands.command(aliases=("src", "github", "git"), invoke_without_command=True)
     async def source(
-        self, ctx: commands.Context, *, source_item: SourceConverter = None
+        self, ctx: Context, *, source_item: SourceConverter = None
     ):
         """Shows the github repo for this bot, include a command, cog, or extension to got to that file."""
         if source_item is None:
@@ -182,9 +183,9 @@ class AllInfo(commands.Cog):
     def get_source_code(
         self, source_item: Union[commands.Command, commands.Cog, ModuleType]
     ) -> Tuple[str, int]:
-        if isinstance(source_item, (commands.Cog, ModuleType)):
+        if isinstance(source_item, ModuleType):
             source = getsourcelines(source_item)
-        elif isinstance(source_item, commands.HelpCommand):
+        elif isinstance(source_item, (commands.Cog, commands.HelpCommand)):
             source = getsourcelines(type(source_item))
         elif isinstance(source_item, commands.Command):
             source = getsourcelines(source_item.callback)
