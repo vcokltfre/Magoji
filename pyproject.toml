@@ -2,7 +2,7 @@
 name = "magoji"
 version = "0.1.0"
 description = "A shared utility Discord bot"
-authors = ["vcokltfre <vcokltfre@gmail.com>", "chili <chili@github.com>", "anand <anand2312@github.com>"]
+authors = ["vcokltfre <vcokltfre@gmail.com>", "chili <chili@github.com>", "anand <anand2312@github.com>", "mudkip <mudkip@mudkip.dev>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
