@@ -10,13 +10,22 @@ from typing import Generator, Optional, Sequence, Union
 class Context(_BaseContext):
     """A Custom Context for extra functionality."""
 
-    async def guild_config(self):
+    async def guild_config(self) -> dict:
         """Gets the config for the guild."""
         guild = await self.bot.db.fetch_guild(self.guild.id)
 
         if guild:
             return json.loads(guild["config"])
         return {}
+
+    async def update_guild_config(self, **kwargs):
+        """Updates the guild config."""
+        config = await self.guild_config()
+        config.update(kwargs)
+
+        await self.bot.db.update_config(self.guild.id, json.dumps(config))
+
+
 
     @contextlib.asynccontextmanager
     async def reaction_menu(
