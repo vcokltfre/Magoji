@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import textwrap
 from typing import Optional
 
-from utilities.helpers import EmbedHelper, CustomTimeConverter
+from utilities.helpers import EmbedHelper, CustomTimeConverter, convert_date
 from internal.context import Context
 
 
@@ -137,6 +137,7 @@ class StaffCommands(commands.Cog):
 
             curtime = datetime.now()
             expires = curtime + timedelta(seconds=length)
+            expires = convert_date(expires)
 
             description = textwrap.dedent(f"""
                                         **ID:** {member.id}
