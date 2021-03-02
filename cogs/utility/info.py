@@ -135,6 +135,7 @@ class AllInfo(commands.Cog):
                             description=textwrap.dedent(f"""
                             **User:** {user.mention}
                             **ID:** {user.id}
+                            **Bot:** {user.bot}
                             **Created At:** {created}
                         """),
 
