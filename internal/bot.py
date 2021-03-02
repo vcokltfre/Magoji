@@ -80,7 +80,7 @@ if __name__ == "__main__":
         "core.utility",
         "core.config",
         "utility.info",
-        # "utility.tokens",
+        "utility.tokens",
     )
 
     bot.run(getenv("TOKEN"))
