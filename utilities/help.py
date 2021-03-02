@@ -4,6 +4,7 @@ from discord.ext.commands import HelpCommand
 
 import typing as t
 
+from internal.context import Context
 
 class HelpMenu(menus.Menu):
     """An interactive help menu."""
@@ -19,7 +20,7 @@ class HelpMenu(menus.Menu):
         return len(self.pages) > 1
 
     async def send_initial_message(
-        self, ctx: commands.Context, channel: discord.abc.Messageable
+        self, ctx: Context, channel: discord.abc.Messageable
     ):
         """Sends the initial message for the menu session."""
         return await ctx.reply(embed=self.pages[0])
@@ -30,7 +31,7 @@ class HelpMenu(menus.Menu):
         self.page = 0
         embed = self.pages[self.page]
         embed.title = self.title
-        if embed != self.message.embeds[0]:
+        if embed is not self.message.embeds[0]:
             await self.message.edit(embed=embed)
         try:
             await self.message.remove_reaction(payload.emoji, self.ctx.author)
@@ -46,7 +47,7 @@ class HelpMenu(menus.Menu):
         else:
             embed = self.pages[self.page]
             embed.title = self.title
-            if embed != self.message.embeds[0]:
+            if embed is not self.message.embeds[0]:
                 await self.message.edit(embed=embed)
         try:
             await self.message.remove_reaction(payload.emoji, self.ctx.author)
@@ -62,7 +63,7 @@ class HelpMenu(menus.Menu):
         else:
             embed = self.pages[self.page]
             embed.title = self.title
-            if embed != self.message.embeds[0]:
+            if embed is not self.message.embeds[0]:
                 await self.message.edit(embed=embed)
         try:
             await self.message.remove_reaction(payload.emoji, self.ctx.author)
@@ -74,11 +75,7 @@ class HelpMenu(menus.Menu):
         """A method to go to the last page."""
         self.page = len(self.pages) - 1
         embed = self.pages[self.page]
-        if self.keep_last_title:
-            for embed1 in self.pages[: self.page : -1]:
-                if embed1.title:
-                    embed.title = embed1.title
-        if embed != self.message.embeds[0]:
+        if embed is not self.message.embeds[0]:
             await self.message.edit(embed=embed)
         try:
             await self.message.remove_reaction(payload.emoji, self.ctx.author)
