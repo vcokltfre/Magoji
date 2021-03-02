@@ -9,8 +9,9 @@ bot.load_extensions(
     "core.utility",
     "core.config",
     "utility.info",
+    "utility.tokens"
     "moderation.moderation",
-    # "utility.tokens",
+    "moderation.logging",
 )
 
 bot.run(getenv("TOKEN"))
