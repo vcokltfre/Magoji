@@ -24,7 +24,7 @@ class EmbedHelper(discord.Embed):
 
         # TODO: ADD DOCSTRING
 
-        super().__init__()
+        super().__init__(z)
 
         self.title = title or self.Empty
 
