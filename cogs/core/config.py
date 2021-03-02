@@ -8,6 +8,7 @@ from internal.context import Context
 
 from utilities.helpers import EmbedHelper
 
+
 class Config(commands.Cog):
     """Bot configuration commands for Magoji."""
 
@@ -39,8 +40,11 @@ class Config(commands.Cog):
         """Sets the logging channel for your server."""
 
         await ctx.update_guild_config(log_channel=channel.id)
-        embed = EmbedHelper(title=f"✅ Logging channel has been set to {channel.mention}.")
+        embed = EmbedHelper(
+            description=f"**✅ Logging channel has been set to {channel.mention}.**"
+        )
         await ctx.send(embed=embed)
+
 
 def setup(bot: Bot):
     bot.add_cog(Config(bot))
