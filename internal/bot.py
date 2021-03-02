@@ -11,6 +11,7 @@ from utilities.database import Database
 from utilities.help import Help
 
 from .context import Context
+from utilities.helpers import IDGenerator
 
 load_dotenv()
 
@@ -34,6 +35,7 @@ class Bot(commands.Bot):
 
         self.http_session: Optional[ClientSession] = None
         self.db = Database()
+        self.idgen = IDGenerator()
 
     def load_extensions(self, *exts):
         """Load a set of extensions, autoprefixed by 'cogs.'"""
@@ -65,6 +67,7 @@ class Bot(commands.Bot):
 
         return guild_config[1]
 
+
     async def get_context(self, message: Message):
         return await super().get_context(message, cls=Context)
 
@@ -77,7 +80,7 @@ if __name__ == "__main__":
         "core.utility",
         "core.config",
         "utility.info",
-        # "utility.tokens",
+        "utility.tokens",
     )
 
     bot.run(getenv("TOKEN"))

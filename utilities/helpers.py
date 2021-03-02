@@ -1,8 +1,12 @@
 import discord
+from discord.ext import commands
 from discord import Colour
 from datetime import datetime
 
 from typing import Optional, Union, List
+from datetime import timedelta
+from itertools import groupby
+from time import time
 
 
 class EmbedHelper(discord.Embed):
@@ -89,3 +93,44 @@ def convert_date(date: datetime):
     # TODO: Add docstring
 
     return date.strftime(f"%A, %B %-d, %Y at %-I:%M {('A', 'P')[date == 0]}M UTC")
+
+
+def get_timedelta(arg: str) -> timedelta:
+    """Converts a string of time for eg: 5h -> into an equivalent timedelta object."""
+    arg = arg.lower()
+    amts, units = [], []
+
+    unit_mapping = {
+        "h": "hours", "hour": "hours",
+        "mins": "minutes", "minute": "minutes",
+        "s": "seconds", "second": "seconds",
+        "d": "days", "day": "days",
+        "m": "months",  # m already assigned for minutes
+        "y": "years"
+    }
+
+    grouped = groupby(arg, key=str.isdigit)
+
+    for key, group in grouped:
+        if key:  # means isdigit returned true, meaning they are numbers
+            amts.append(int("".join(group)))
+        else:
+            units.append(unit_mapping["".join(group)])  # convert h -> hours, m -> minutes and so on
+
+
+
+class CustomTimeConverter(commands.Converter):
+    """Returns a timedelta object."""
+    async def convert(self, ctx, arg: str) -> timedelta:
+        return get_timedelta(arg)
+
+
+class IDGenerator():
+    def __init__(self):
+        self.wid = 0
+        self.inc = 0
+
+    def __next__(self):
+        t = round(time() * 1000) - 1609459200000
+        self.inc += 1
+        return ((t << 14) | (self.wid << 6) | (self.inc % 2**6))
