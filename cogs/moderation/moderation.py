@@ -42,7 +42,7 @@ class StaffCommands(commands.Cog):
 
             await ctx.send(embed=embed)
 
-            await self.bot.db.exactue(
+            await self.bot.db.execute(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id, ctx.author.id, member,
                 ctx.author, "kick", curtime)
@@ -97,7 +97,7 @@ class StaffCommands(commands.Cog):
 
             await ctx.send(embed=embed)
 
-            await self.bot.db.exactue(
+            await self.bot.db.execute(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id, ctx.author.id, member, ctx.author, "ban", curtime)
 
