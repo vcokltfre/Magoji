@@ -3,7 +3,6 @@ from discord.ext import commands
 
 from datetime import datetime
 import textwrap
-from uuid import uuid4
 
 from utilities.helpers import EmbedHelper, CustomTimeConverter
 from internal.context import Context
@@ -45,7 +44,7 @@ class StaffCommands(commands.Cog):
 
             await self.bot.db.exactue(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', uuid4(), ctx.guild.id, member.id, ctx.author.id, member,
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id, ctx.author.id, member,
                 ctx.author, "kick", curtime)
 
             await member.kick(reason=reason)
@@ -100,7 +99,7 @@ class StaffCommands(commands.Cog):
 
             await self.bot.db.exactue(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', uuid4(), ctx.guild.id, member.id, ctx.author.id, member, ctx.author, "ban", curtime)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id, ctx.author.id, member, ctx.author, "ban", curtime)
 
             await member.ban(reason=reason)
 

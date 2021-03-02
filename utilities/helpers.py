@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Optional, Union, List
 from datetime import timedelta
 from itertools import groupby
+from time import time
 
 
 class EmbedHelper(discord.Embed):
@@ -101,11 +102,11 @@ def get_timedelta(arg: str) -> timedelta:
 
     unit_mapping = {
         "h": "hours", "hour": "hours",
-        "m": "minutes", "minute": "minutes",
+        "mins": "minutes", "minute": "minutes",
         "s": "seconds", "second": "seconds",
         "d": "days", "day": "days",
-        "month": "months",  # m already assigned for minutes
-        "year": "years"
+        "m": "months",  # m already assigned for minutes
+        "y": "years"
     }
 
     grouped = groupby(arg, key=str.isdigit)
@@ -124,3 +125,12 @@ class CustomTimeConverter(commands.Converter):
         return get_timedelta(arg)
 
 
+class IDGenerator():
+    def __init__(self):
+        self.wid = 0
+        self.inc = 0
+
+    def __next__(self):
+        t = round(time() * 1000) - 1609459200000
+        self.inc += 1
+        return ((t << 14) | (self.wid << 6) | (self.inc % 2**6))
