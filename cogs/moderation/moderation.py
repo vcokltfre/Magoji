@@ -205,13 +205,23 @@ class StaffCommands(commands.Cog):
             await ctx.guild.unban(user)
             await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, modname, case_type, created_at)
                                       VALUES ($1, $2, $3, $4, $5, $6, $7)''', cid, ctx.guild.id, id,
-                                      ctx.author.id,
-                                      ctx.author, "unban", datetime.now())
+                                      ctx.author.id, ctx.author, "unban", datetime.now())
 
             self.bot.dispatch("unban", case=cid, user_id=id, guild_id=ctx.guild.id, mod_id=ctx.author.id)
 
         except discord.HTTPException as e:
             await ctx.send(f'an error has occured when attempting to run `{ctx.prefix}{ctx.command}`: ```{e}```')
+
+    @commands.command(aliases=['add_note', 'notea', 'notec'])
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
+    async def anote(self, ctx: Context, member: discord.Member, *, content: str):
+
+        await ctx.send(f'Added note to member: {member} with the content:\n"{content}"')
+
+        await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data)
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id,
+                                  ctx.author.id, member, ctx.author, "note", content)
 
 
 def setup(bot):
