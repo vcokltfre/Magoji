@@ -136,7 +136,7 @@ class StaffCommands(commands.Cog):
         if member.top_role < ctx.author.top_role:
 
             curtime = datetime.now()
-            expires = curtime + timedelta(seconds=length)
+            expires = curtime + length
             expires = convert_date(expires)
 
             description = textwrap.dedent(f"""
@@ -206,10 +206,10 @@ class StaffCommands(commands.Cog):
 
             await ctx.guild.unban(user)
             await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, modname, case_type, created_at)
-                                      VALUES ($1, $2, $3, $4, $5, $6, $7)''', cid, ctx.guild.id, id,
+                                      VALUES ($1, $2, $3, $4, $5, $6, $7)''', cid, ctx.guild.id, user.id,
                                       ctx.author.id, str(ctx.author), "unban", datetime.now())
 
-            self.bot.dispatch("unban", case=cid, user_id=id, guild_id=ctx.guild.id, mod_id=ctx.author.id)
+            self.bot.dispatch("unban", case=cid, user_id=user.id, guild=ctx.guild, mod=ctx.author)
 
         except discord.HTTPException as e:
             await ctx.send(f'an error has occured when attempting to run `{ctx.prefix}{ctx.command}`: ```{e}```')

@@ -102,10 +102,10 @@ def get_timedelta(arg: str) -> timedelta:
 
     unit_mapping = {
         "h": "hours", "hour": "hours",
-        "mins": "minutes", "minute": "minutes",
+        "m": "minutes", "minute": "minutes",
         "s": "seconds", "second": "seconds",
         "d": "days", "day": "days",
-        "m": "months",  # m already assigned for minutes
+        "M": "months",  # m already assigned for minutes
         "y": "years"
     }
 
@@ -116,7 +116,8 @@ def get_timedelta(arg: str) -> timedelta:
             amts.append(int("".join(group)))
         else:
             units.append(unit_mapping["".join(group)])  # convert h -> hours, m -> minutes and so on
-
+                         
+    return timedelta(**dict(zip(units, amts)))
 
 
 class CustomTimeConverter(commands.Converter):

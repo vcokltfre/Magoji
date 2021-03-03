@@ -5,7 +5,7 @@ from re import compile, ASCII
 from internal.bot import Bot
 from utilities.gist import create
 
-TOKEN_RE = compile(r"([\w\-=]+)\.([\w\-=]+)\.([\w\-=]+)", ASCII)
+TOKEN_RE = compile(r"([A-Za-z\d]{23})\.([\w-]{6})\.([\w-]{27})", ASCII)
 
 
 class Core(commands.Cog):

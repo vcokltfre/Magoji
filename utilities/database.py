@@ -29,9 +29,9 @@ class Database:
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, *args)
 
-    async def create_guild(self, id: int, prefix: str = ">"):
+    async def create_guild(self, id: int, prefix: str = ">", config: str = "{}"):
         await self.execute(
-            "INSERT INTO Guilds (id, prefix) VALUES ($1, $2);", id, prefix
+            "INSERT INTO Guilds (id, prefix, config) VALUES ($1, $2, $3);", id, prefix, config
         )
 
     async def update_guild_prefix(self, id: int, prefix: str):
@@ -56,3 +56,10 @@ class Database:
             userid,
             guildid,
         )
+    async def update_config(self, id: int, config: str):
+        if not await self.fetch_guild(id):
+            return await self.create_guild(id, config=config)
+
+        if id in self.guilds:
+            del self.guilds[id]
+        await self.execute("UPDATE Guilds SET config = $1 WHERE id = $2;", config, id)
