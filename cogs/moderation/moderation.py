@@ -135,7 +135,7 @@ class StaffCommands(commands.Cog):
         if member.top_role < ctx.author.top_role:
 
             curtime = datetime.now()
-            expires = curtime + timedelta(seconds=length)
+            expires = curtime + length
             expires = convert_date(expires)
 
             description = textwrap.dedent(f"""
