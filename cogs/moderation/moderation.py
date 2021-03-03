@@ -219,6 +219,7 @@ class StaffCommands(commands.Cog):
 
         await ctx.send(f'Added note to member: {member} with the content:\n"{content}"')
 
+
         await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data)
                                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id,
                                   ctx.author.id, member, ctx.author, "note", content)
