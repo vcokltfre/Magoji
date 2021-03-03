@@ -46,8 +46,8 @@ class StaffCommands(commands.Cog):
             await self.bot.db.execute(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, case_data)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                ctx.author.id, member,
-                ctx.author, "kick", curtime, reason)
+                ctx.author.id, str(member),
+                str(ctx.author), "kick", curtime, reason)
 
             await member.kick(reason=reason)
 
@@ -103,7 +103,7 @@ class StaffCommands(commands.Cog):
             await self.bot.db.execute(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, expires_at, case_data)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                ctx.author.id, member, ctx.author, "ban", curtime, "never", reason)
+                ctx.author.id, str(member), str(ctx.author), "ban", curtime, "never", reason)
 
             await member.ban(reason=reason)
 
@@ -162,7 +162,7 @@ class StaffCommands(commands.Cog):
             await self.bot.db.execute(
                 '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, expires_at, case_data)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                ctx.author.id, member, ctx.author, "tempban", curtime, expires, reason)
+                ctx.author.id, str(member), str(ctx.author), "tempban", curtime, expires, reason)
 
             await member.ban(reason=reason)
 
@@ -197,15 +197,14 @@ class StaffCommands(commands.Cog):
     @commands.command(name="unban")
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
-    async def _unban(self, ctx, id: int, *, reason="No Reason Provided"):
+    async def _unban(self, ctx, user: discord.Object, *, reason="No Reason Provided"):
         try:
-            user = discord.Object(id=id)
             cid = next(self.bot.idgen)
 
             await ctx.guild.unban(user)
             await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, modname, case_type, created_at)
                                       VALUES ($1, $2, $3, $4, $5, $6, $7)''', cid, ctx.guild.id, id,
-                                      ctx.author.id, ctx.author, "unban", datetime.now())
+                                      ctx.author.id, str(ctx.author), "unban", datetime.now())
 
             self.bot.dispatch("unban", case=cid, user_id=id, guild_id=ctx.guild.id, mod_id=ctx.author.id)
 
@@ -222,7 +221,7 @@ class StaffCommands(commands.Cog):
 
         await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data)
                                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                                  ctx.author.id, member, ctx.author, "note", content)
+                                  ctx.author.id, str(member), str(ctx.author), "note", content)
 
         """
         TODO:
