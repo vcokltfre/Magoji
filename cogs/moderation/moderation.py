@@ -189,7 +189,7 @@ class StaffCommands(commands.Cog):
     async def clear(self, ctx: Context, channel: Optional[discord.TextChannel], amount: int):
         channel = channel or ctx.channel
 
-        await ctx.send(f"now purging {amount} messages...")
+        await ctx.send(f"now purging {amount} messages...", delete_after=1.5)
 
         await channel.purge(limit=amount + 1)
         self.bot.dispatch("purge", author=ctx.author)
