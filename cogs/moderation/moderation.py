@@ -4,6 +4,7 @@ from discord.ext import commands
 from datetime import datetime, timedelta
 import textwrap
 from typing import Optional
+import asyncio
 
 from utilities.helpers import EmbedHelper, CustomTimeConverter, convert_date
 from internal.context import Context
@@ -190,6 +191,8 @@ class StaffCommands(commands.Cog):
         channel = channel or ctx.channel
 
         await ctx.send(f"now purging {amount} messages...", delete_after=1.5)
+
+        await asyncio.sleep(1.6)
 
         await channel.purge(limit=amount + 1)
         self.bot.dispatch("purge", author=ctx.author)
