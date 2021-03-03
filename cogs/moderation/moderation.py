@@ -224,6 +224,11 @@ class StaffCommands(commands.Cog):
                                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id,
                                   ctx.author.id, member, ctx.author, "note", content)
 
+        """
+        TODO:
+        create notes command to get a list of notes in a user
+        """
+
 
 def setup(bot):
     bot.add_cog(StaffCommands(bot))
