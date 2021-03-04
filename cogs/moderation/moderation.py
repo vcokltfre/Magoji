@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, menus
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import textwrap
 from typing import Optional
 import asyncio
@@ -227,12 +227,14 @@ class StaffCommands(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def anote(self, ctx: Context, member: discord.Member, *, content: str):
 
+        cid = next(self.bot.idgen)
 
-        await ctx.send(f'Added note to member: {member} with the content:\n```{content}```')
+
+        await ctx.send(f'Added note to member: {member} with the content:\n```{content}```\nCase ID: {cid}')
 
 
         await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data, created_at)
-                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)''', next(self.bot.idgen), ctx.guild.id, member.id,
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)''', cid, ctx.guild.id, member.id,
                                   ctx.author.id, str(member), str(ctx.author), "note", content, datetime.now())
 
         """
@@ -254,10 +256,12 @@ class StaffCommands(commands.Cog):
             for row in rows:
                 embed = EmbedHelper(title=f"{row[4].title()}'s Notes",
                                     description=textwrap.dedent(f"""
-                                                        **Case Author:** {row[5]}
-                                                        **Case User:** {row[4]}
+                                    **Case ID:** {row[0]}
                                                         
-                                                        **Case Data:**\n```{row[-2]}```
+                                    **Case Author:** {row[5]}
+                                    **Case User:** {row[4]}
+                                                        
+                                    **Case Data:**\n```{row[-2]}```
                                                                 """),
 
                                     thumbnail_url=member.avatar_url,
@@ -266,9 +270,25 @@ class StaffCommands(commands.Cog):
 
                 embeds.append(embed)
 
-            l = ListSource(embeds)
-            pages = menus.MenuPages(source=l)
+            pages = menus.MenuPages(source=ListSource(embeds), clear_reactions_after=True)
             await pages.start(ctx)
+
+        else:
+            await ctx.send(f"unable to find any notes on {member}")
+
+    @commands.command(aliases=['rcase'])
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    async def dcase(self, ctx: Context, id: int):
+
+        case = await self.bot.db.fetch('''SELECT * FROM Cases WHERE id = $1''', id)
+
+        if case:
+            await self.bot.db.execute('''DELETE FROM Cases WHERE id = $1''', id)
+            await ctx.send(f"removed case: {id} from our database")
+
+        else:
+            await ctx.send(f"no case found with the ID: {id}")
 
 
 def setup(bot):
