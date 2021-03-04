@@ -236,12 +236,6 @@ class StaffCommands(commands.Cog):
         await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data, created_at)
                                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)''', cid, ctx.guild.id, member.id,
                                   ctx.author.id, str(member), str(ctx.author), "note", content, datetime.now())
-
-        """
-        TODO:
-        create notes command to get a list of notes in a user
-        """
-
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
