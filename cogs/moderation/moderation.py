@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 
 from datetime import datetime, timedelta
 import textwrap
@@ -8,6 +8,14 @@ import asyncio
 
 from utilities.helpers import EmbedHelper, CustomTimeConverter, convert_date
 from internal.context import Context
+
+
+class ListSource(menus.ListPageSource):
+    def __init__(self, data):
+        super().__init__(data, per_page=1)
+
+    async def format_page(self, menu, page):
+        return page
 
 
 class StaffCommands(commands.Cog):
@@ -219,17 +227,48 @@ class StaffCommands(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def anote(self, ctx: Context, member: discord.Member, *, content: str):
 
-        await ctx.send(f'Added note to member: {member} with the content:\n"{content}"')
+
+        await ctx.send(f'Added note to member: {member} with the content:\n```{content}```')
 
 
-        await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data)
-                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                                  ctx.author.id, str(member), str(ctx.author), "note", content)
+        await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data, created_at)
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)''', next(self.bot.idgen), ctx.guild.id, member.id,
+                                  ctx.author.id, str(member), str(ctx.author), "note", content, datetime.now())
 
         """
         TODO:
         create notes command to get a list of notes in a user
         """
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
+    async def notes(self, ctx: Context, member: discord.Member):
+
+        rows = await self.bot.db.fetch(
+                '''SELECT id, guildid, userid, modid, username, modname, case_data, created_at
+                FROM Cases WHERE guildid = $1 AND userid = $2''', ctx.guild.id, member.id)
+
+        if rows:
+            embeds = []
+            for row in rows:
+                embed = EmbedHelper(title=f"{row[4].title()}'s Notes",
+                                    description=textwrap.dedent(f"""
+                                                        **Case Author:** {row[5]}
+                                                        **Case User:** {row[4]}
+                                                        
+                                                        **Case Data:**\n```{row[-2]}```
+                                                                """),
+
+                                    thumbnail_url=member.avatar_url,
+                                    footer_text=f"Case created at {convert_date(row[-1])}",
+                                    )
+
+                embeds.append(embed)
+
+            l = ListSource(embeds)
+            pages = menus.MenuPages(source=l)
+            await pages.start(ctx)
 
 
 def setup(bot):
