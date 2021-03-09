@@ -7,6 +7,7 @@ from typing import Optional
 import asyncio
 
 from utilities.helpers import EmbedHelper, CustomTimeConverter, convert_date
+from utilities.checks import role_hierarchy
 from internal.context import Context
 
 
@@ -17,182 +18,161 @@ class StaffCommands(commands.Cog):
     @commands.command(name="kick")
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
-    async def _kick(self, ctx: Context, member: discord.Member, *, reason="No Reason Provided"):
+    @role_hierarchy()
+    async def _kick(
+        self, ctx: Context, member: discord.Member, *, reason="No Reason Provided"
+    ):
+        """Kick the member out of the server."""
 
-        # TODO: add comments and docstrings
+        description = textwrap.dedent(
+            f"""
+                                    **ID:** {member.id}
+                                    **Bot:** {member.bot}
+                                    **Reason:** {reason.title()}
+                                        """
+        )
 
-        if member.top_role < ctx.author.top_role:
+        curtime = datetime.now()
 
-            description = textwrap.dedent(f"""
-                                        **ID:** {member.id}
-                                        **Bot:** {member.bot}
-                                        **Reason:** {reason.title()}
-                                            """)
+        embed = EmbedHelper(
+            title=f"Kicking {member}",
+            description=description,
+            footer_text=f"Kicked by {ctx.author}",
+            footer_url=ctx.author.avatar_url,
+            timestamp=curtime,
+            thumbnail_url=member.avatar_url,
+        )
 
-            curtime = datetime.now()
+        await ctx.send(embed=embed)
 
-            embed = EmbedHelper(
-                title=f"Kicking {member}",
-                description=description,
+        await self.bot.db.execute(
+            """INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, case_data)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)""",
+            next(self.bot.idgen),
+            ctx.guild.id,
+            member.id,
+            ctx.author.id,
+            str(member),
+            str(ctx.author),
+            "kick",
+            curtime,
+            reason,
+        )
 
-                footer_text=f"Kicked by {ctx.author}",
-                footer_url=ctx.author.avatar_url,
+        await member.kick(reason=reason)
 
-                timestamp=curtime,
-                thumbnail_url=member.avatar_url,
-            )
-
-            await ctx.send(embed=embed)
-
-            await self.bot.db.execute(
-                '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, case_data)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                ctx.author.id, str(member),
-                str(ctx.author), "kick", curtime, reason)
-
-            await member.kick(reason=reason)
-
-        else:
-
-            embed = EmbedHelper(title=f'An Error Has Occurred',
-                                description=f'''An error has occurred when attempting to kick {member.mention}: 
-                                "cannot kick members with the same/higher role as you"'''.strip('\n'),
-
-                                thumbnail_url=member.avatar_url,
-
-                                timestamp=datetime.now(),
-                                colour=discord.Colour.red(),
-
-                                footer_text=f"Command Attempted by {ctx.author}",
-                                footer_url=ctx.author.avatar_url,
-                                )
-
-            await ctx.send(embed=embed)
-
-    @commands.command(name="ban", aliases=['pban'])
+    @commands.command(name="ban", aliases=["pban"])
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
-    async def _ban(self, ctx: Context, member: discord.Member, *, reason="No Reason Provided"):
+    async def _ban(
+        self, ctx: Context, member: discord.Member, *, reason="No Reason Provided"
+    ):
+        """Perminantly ban the member from the server."""
 
-        # TODO: add comments and docstrings
+        description = textwrap.dedent(
+            f"""
+                                    **ID:** {member.id}
+                                    **Bot:** {member.bot}
+                                    **Reason:** {reason.title()}
+                                    **Length:** Permanent
+                                    **Expires:** Never
+                                        """
+        )
 
-        if member.top_role < ctx.author.top_role:
+        curtime = datetime.now()
 
-            description = textwrap.dedent(f"""
-                                        **ID:** {member.id}
-                                        **Bot:** {member.bot}
-                                        **Reason:** {reason.title()}
-                                        **Length:** Permanent
-                                        **Expires:** Never
-                                            """)
+        embed = EmbedHelper(
+            title=f"Banning {member}",
+            description=description,
+            footer_text=f"Banned by {ctx.author}",
+            footer_url=ctx.author.avatar_url,
+            timestamp=curtime,
+            thumbnail_url=member.avatar_url,
+        )
 
-            curtime = datetime.now()
+        await ctx.send(embed=embed)
 
-            embed = EmbedHelper(
-                title=f"Banning {member}",
-                description=description,
+        await self.bot.db.execute(
+            """INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, case_data)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)""",
+            next(self.bot.idgen),
+            ctx.guild.id,
+            member.id,
+            ctx.author.id,
+            str(member),
+            str(ctx.author),
+            "ban",
+            curtime,
+            reason,
+        )
 
-                footer_text=f"Banned by {ctx.author}",
-                footer_url=ctx.author.avatar_url,
+        await member.ban(reason=reason)
 
-                timestamp=curtime,
-                thumbnail_url=member.avatar_url,
-            )
-
-            await ctx.send(embed=embed)
-
-            await self.bot.db.execute(
-                '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, expires_at, case_data)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                ctx.author.id, str(member), str(ctx.author), "ban", curtime, "never", reason)
-
-            await member.ban(reason=reason)
-
-        else:
-
-            embed = EmbedHelper(title=f'An Error Has Occurred',
-                                description=f'''An error has occurred when attempting to ban {member.mention}: 
-                                "cannot ban members with the same/higher role as you"'''.strip('\n'),
-
-                                thumbnail_url=member.avatar_url,
-
-                                timestamp=datetime.now(),
-                                colour=discord.Colour.red(),
-
-                                footer_text=f"Command Attempted by {ctx.author}",
-                                footer_url=ctx.author.avatar_url,
-                                )
-
-            await ctx.send(embed=embed)
-
-    @commands.command(aliases=['tban'])
+    @commands.command(aliases=["tban"])
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
-    async def tempban(self, ctx: Context, member: discord.Member, length: CustomTimeConverter, *,
-                      reason="No Reason Provided"):
+    async def tempban(
+        self,
+        ctx: Context,
+        member: discord.Member,
+        length: CustomTimeConverter,
+        *,
+        reason="No Reason Provided",
+    ):
 
         # TODO: add comments and docstrings
 
-        if member.top_role < ctx.author.top_role:
+        curtime = datetime.now()
+        expires = curtime + length
+        expires = convert_date(expires)
 
-            curtime = datetime.now()
-            expires = curtime + length
-            expires = convert_date(expires)
+        description = textwrap.dedent(
+            f"""
+                                    **ID:** {member.id}
+                                    **Bot:** {member.bot}
+                                    **Reason:** {reason.title()}
+                                    **Length:** {length}
+                                    **Expires:** {expires}
+                                        """
+        )
 
-            description = textwrap.dedent(f"""
-                                        **ID:** {member.id}
-                                        **Bot:** {member.bot}
-                                        **Reason:** {reason.title()}
-                                        **Length:** {length}
-                                        **Expires:** {expires}
-                                            """)
+        embed = EmbedHelper(
+            title=f"Banning {member}",
+            description=description,
+            footer_text=f"Banned by {ctx.author}",
+            footer_url=ctx.author.avatar_url,
+            timestamp=curtime,
+            thumbnail_url=member.avatar_url,
+        )
 
-            embed = EmbedHelper(
-                title=f"Banning {member}",
-                description=description,
+        await ctx.send(embed=embed)
 
-                footer_text=f"Banned by {ctx.author}",
-                footer_url=ctx.author.avatar_url,
+        await self.bot.db.execute(
+            """INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, expires_at, case_data)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)""",
+            next(self.bot.idgen),
+            ctx.guild.id,
+            member.id,
+            ctx.author.id,
+            str(member),
+            str(ctx.author),
+            "tempban",
+            curtime,
+            expires,
+            reason,
+        )
 
-                timestamp=curtime,
-                thumbnail_url=member.avatar_url,
-            )
+        await member.ban(reason=reason)
 
-            await ctx.send(embed=embed)
-
-            await self.bot.db.execute(
-                '''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, created_at, expires_at, case_data)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                ctx.author.id, str(member), str(ctx.author), "tempban", curtime, expires, reason)
-
-            await member.ban(reason=reason)
-
-        else:
-
-            embed = EmbedHelper(title=f'An Error Has Occurred',
-                                description=f'''An error has occurred when attempting to ban {member.mention}: 
-                                "cannot ban members with the same/higher role as you"'''.strip('\n'),
-
-                                thumbnail_url=member.avatar_url,
-
-                                timestamp=datetime.now(),
-                                colour=discord.Colour.red(),
-
-                                footer_text=f"Command Attempted by {ctx.author}",
-                                footer_url=ctx.author.avatar_url,
-                                )
-
-            await ctx.send(embed=embed)
-
-    @commands.command(aliases=['purge', 'del', 'delete'])
+    @commands.command(aliases=["purge", "del", "delete"])
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx: Context, channel: Optional[discord.TextChannel], amount: int):
+    async def clear(
+        self, ctx: Context, channel: Optional[discord.TextChannel], amount: int
+    ):
         channel = channel or ctx.channel
 
         await ctx.send(f"now purging {amount} messages...", delete_after=1.5)
-
-        await asyncio.sleep(1.6)
 
         await channel.purge(limit=amount + 1)
         self.bot.dispatch("purge", author=ctx.author)
@@ -205,26 +185,46 @@ class StaffCommands(commands.Cog):
             cid = next(self.bot.idgen)
 
             await ctx.guild.unban(user)
-            await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, modname, case_type, created_at)
-                                      VALUES ($1, $2, $3, $4, $5, $6, $7)''', cid, ctx.guild.id, user.id,
-                                      ctx.author.id, str(ctx.author), "unban", datetime.now())
+            await self.bot.db.execute(
+                """INSERT INTO Cases(id, guildid, userid, modid, modname, case_type, created_at)
+                                      VALUES ($1, $2, $3, $4, $5, $6, $7)""",
+                cid,
+                ctx.guild.id,
+                user.id,
+                ctx.author.id,
+                str(ctx.author),
+                "unban",
+                datetime.now(),
+            )
 
-            self.bot.dispatch("unban", case=cid, user_id=user.id, guild=ctx.guild, mod=ctx.author)
+            self.bot.dispatch(
+                "unban", case=cid, user_id=user.id, guild=ctx.guild, mod=ctx.author
+            )
 
         except discord.HTTPException as e:
-            await ctx.send(f'an error has occured when attempting to run `{ctx.prefix}{ctx.command}`: ```{e}```')
+            await ctx.send(
+                f"an error has occured when attempting to run `{ctx.prefix}{ctx.command}`: ```{e}```"
+            )
 
-    @commands.command(aliases=['add_note', 'notea', 'notec'])
+    @commands.command(aliases=["add_note", "notea", "notec"])
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
     async def anote(self, ctx: Context, member: discord.Member, *, content: str):
 
         await ctx.send(f'Added note to member: {member} with the content:\n"{content}"')
 
-
-        await self.bot.db.execute('''INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data)
-                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)''', next(self.bot.idgen), ctx.guild.id, member.id,
-                                  ctx.author.id, str(member), str(ctx.author), "note", content)
+        await self.bot.db.execute(
+            """INSERT INTO Cases(id, guildid, userid, modid, username, modname, case_type, case_data)
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
+            next(self.bot.idgen),
+            ctx.guild.id,
+            member.id,
+            ctx.author.id,
+            str(member),
+            str(ctx.author),
+            "note",
+            content,
+        )
 
         """
         TODO:

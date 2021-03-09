@@ -42,7 +42,7 @@ def role_hierarchy(*, ctx_arg: int = 1, member_arg: int = 2):
                 )  # Skip if they aren't the right types.
 
             if ctx.author.top_role <= member.top_role:
-                raise MissingPermissions  # TODO: Make another role hierarchy Exception
+                raise Exception  # TODO: Make another role hierarchy Exception
 
             return await func(*args, **kwargs)
 
