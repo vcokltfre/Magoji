@@ -23,7 +23,7 @@ def command_enabled(command: str):
 
     return check(predicate)
 
-def role_hierarchy(ctx_arg: int = 0, member_arg: int = 1):
+def role_hierarchy(*, ctx_arg: int = 1, member_arg: int = 2):
     """Check if the invoker's top role is higher than the member's top role."""
     def decorator(func):
         @wraps(func)
