@@ -32,7 +32,10 @@ def role_hierarchy(*, ctx_arg: int = 1, member_arg: int = 2):
         @wraps(func)
         async def inner(*args, **kwargs):
             ctx = args[ctx_arg]
-            member = args[member_arg] or kwargs.get("member")
+            try:
+                member = args[member_arg]
+            except IndexError:
+                member = kwargs.get("member")
             if not (isinstance(ctx, Context) and isinstance(member, Member)):
                 return await func(
                     *args, **kwargs
