@@ -67,9 +67,8 @@ class Bot(commands.Bot):
 
         return guild_config[1]
 
-
-    async def get_context(self, message: Message):
-        return await super().get_context(message, cls=Context)
+    async def get_context(self, message: Message, *, cls=Context):
+        return await super().get_context(message, cls=cls)
 
 
 if __name__ == "__main__":
