@@ -19,6 +19,7 @@ class EmbedHelper(discord.Embed):
         thumbnail_url: Optional[str] = None,
         author_url: Optional[str] = None,
         author_name: Optional[str] = None,
+        author_icon_url: Optional[str] = None,
         footer_url: Optional[str] = None,
         image_url: Optional[str] = None,
         footer_text: Optional[str] = None,
@@ -50,14 +51,13 @@ class EmbedHelper(discord.Embed):
         if image_url:
             self.set_image(url=image_url)
 
-        if author_url or author_name:
-            if author_url and author_name:
-                self.set_author(name=author_name, icon_url=author_url)
-            else:
-                if author_url:
-                    self.set_author(icon_url=author_url)
-                else:
-                    self.set_author(name=author_name)
+        if author_name and any(author_url, author_icon_url):
+            self.set_author(
+                name=author_name,
+                icon_url=author_url or self.Empty,
+                url=author_url or self.Empty,
+            )
+
         if thumbnail_url:
             self.set_thumbnail(url=thumbnail_url)
 
@@ -88,6 +88,12 @@ class EmbedHelper(discord.Embed):
                 name, value = fields
                 self.add_field(name=name, value=value, inline=True)
 
+    @classmethod
+    def from_exception(cls, exception: Exception):
+        return cls(
+            title=f"⚠️ An Error Occurred.", description=str(exception), colour=0xE74C3C
+        )
+
 
 def convert_date(date: datetime):
     # TODO: Add docstring
@@ -101,12 +107,16 @@ def get_timedelta(arg: str) -> timedelta:
     amts, units = [], []
 
     unit_mapping = {
-        "h": "hours", "hour": "hours",
-        "m": "minutes", "minute": "minutes",
-        "s": "seconds", "second": "seconds",
-        "d": "days", "day": "days",
+        "h": "hours",
+        "hour": "hours",
+        "m": "minutes",
+        "minute": "minutes",
+        "s": "seconds",
+        "second": "seconds",
+        "d": "days",
+        "day": "days",
         "M": "months",  # m already assigned for minutes
-        "y": "years"
+        "y": "years",
     }
 
     grouped = groupby(arg, key=str.isdigit)
@@ -115,18 +125,21 @@ def get_timedelta(arg: str) -> timedelta:
         if key:  # means isdigit returned true, meaning they are numbers
             amts.append(int("".join(group)))
         else:
-            units.append(unit_mapping["".join(group)])  # convert h -> hours, m -> minutes and so on
-                         
+            units.append(
+                unit_mapping["".join(group)]
+            )  # convert h -> hours, m -> minutes and so on
+
     return timedelta(**dict(zip(units, amts)))
 
 
 class CustomTimeConverter(commands.Converter):
     """Returns a timedelta object."""
+
     async def convert(self, ctx, arg: str) -> timedelta:
         return get_timedelta(arg)
 
 
-class IDGenerator():
+class IDGenerator:
     def __init__(self):
         self.wid = 0
         self.inc = 0
@@ -134,4 +147,4 @@ class IDGenerator():
     def __next__(self):
         t = round(time() * 1000) - 1609459200000
         self.inc += 1
-        return ((t << 14) | (self.wid << 6) | (self.inc % 2**6))
+        return (t << 14) | (self.wid << 6) | (self.inc % 2 ** 6)

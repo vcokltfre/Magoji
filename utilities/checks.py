@@ -4,6 +4,7 @@ from discord import Member
 
 from internal.context import Context
 
+from utilities.exceptions import RoleHierarchyError
 
 def command_enabled(command: str):
     async def predicate(ctx: Context):
@@ -42,7 +43,7 @@ def role_hierarchy(*, ctx_arg: int = 1, member_arg: int = 2):
                 )  # Skip if they aren't the right types.
 
             if ctx.author.top_role <= member.top_role:
-                raise Exception  # TODO: Make another role hierarchy Exception
+                raise RoleHierarchyError(ctx.author, member)
 
             return await func(*args, **kwargs)
 
