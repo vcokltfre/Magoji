@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import find
 
 from datetime import datetime
 import textwrap
@@ -14,6 +15,8 @@ from internal.context import Context
 
 GITHUB_REPO_URL = "https://github.com/vcokltfre/Magoji"
 
+MIN_EXTENSION_LENGTH = 4
+
 class SourceConverter(commands.Converter):
     """A Converter that converts a string to a Command, Cog or Extension."""
 
@@ -27,9 +30,14 @@ class SourceConverter(commands.Converter):
 
         if cog := ctx.bot.get_cog(argument):
             return cog
+    
+        if len(argument[:-3]) < MIN_EXTENSION_LENGTH:
+            raise commands.BadArgument("Not a valid Command, Cog nor Extension.")
 
-        if extension := ctx.bot.extensions.get(argument):
-            return extension
+        if (extension := find(lambda ext: ext[0].endswith(argument[:-3]), ctx.bot.extensions.items())) \
+            and argument.endswith(".py"):
+            return extension[1]
+
         raise commands.BadArgument("Not a valid Command, Cog nor Extension.")
 
         
@@ -148,7 +156,9 @@ class AllInfo(commands.Cog):
     async def source(
         self, ctx: Context, *, source_item: SourceConverter = None
     ):
-        """Shows the github repo for this bot, include a command, cog, or extension to got to that file."""
+        """Shows the github repo for this bot, include a command, cog, or extension to got to that file.
+        
+           If you want the source for an extension, it must end with `.py`."""
         if source_item is None:
             embed = discord.Embed(
                 title="Magoji's Github Repository",
@@ -171,9 +181,9 @@ class AllInfo(commands.Cog):
             filename = src.__file__
 
         lines, first_line_no = self.get_source_code(source_item)
+        lines_extension = ""
         if first_line_no:
             lines_extension = f"#L{first_line_no}-L{first_line_no+len(lines)-1}"
-        lines_extension = lines_extension or ""
 
         file_location = Path(filename).relative_to(Path.cwd()).as_posix()
 
@@ -205,7 +215,8 @@ class AllInfo(commands.Cog):
             description = source_object.short_doc
             title = f"Command: {source_object.qualified_name}"
         elif isinstance(source_object, ModuleType):
-            title = f"Extension: {source_object.__name__}"
+            title = f"Extension: {source_object.__name__}.py"
+            description = discord.Embed.Empty   
         else:
             title = f"Cog: {source_object.qualified_name}"
             description = source_object.description.splitlines()[0]
