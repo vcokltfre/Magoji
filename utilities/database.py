@@ -31,7 +31,10 @@ class Database:
 
     async def create_guild(self, id: int, prefix: str = ">", config: str = "{}"):
         await self.execute(
-            "INSERT INTO Guilds (id, prefix, config) VALUES ($1, $2, $3);", id, prefix, config
+            "INSERT INTO Guilds (id, prefix, config) VALUES ($1, $2, $3);",
+            id,
+            prefix,
+            config,
         )
 
     async def update_guild_prefix(self, id: int, prefix: str):
@@ -56,6 +59,7 @@ class Database:
             userid,
             guildid,
         )
+
     async def update_config(self, id: int, config: str):
         if not await self.fetch_guild(id):
             return await self.create_guild(id, config=config)

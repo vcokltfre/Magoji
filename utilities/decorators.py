@@ -1,6 +1,7 @@
 from asyncio import get_event_loop
 from functools import partial, wraps
 
+
 def run_in_executor(loop=None):
 
     loop = loop or get_event_loop()
@@ -11,6 +12,7 @@ def run_in_executor(loop=None):
             func = partial(func, *args, **kwargs)
 
             return loop.run_in_executor(None, func)
-        return inner
-    return decorator
 
+        return inner
+
+    return decorator

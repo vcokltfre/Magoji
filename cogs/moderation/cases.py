@@ -5,6 +5,7 @@ from typing import Union, List
 from internal.bot import Bot
 from internal.context import Context
 
+
 class Cases(commands.Cog):
     """Moderation cases commands for Magoji."""
 

@@ -6,6 +6,7 @@ from internal.context import Context
 
 from utilities.exceptions import RoleHierarchyError
 
+
 def command_enabled(command: str):
     async def predicate(ctx: Context):
         if not ctx.guild:

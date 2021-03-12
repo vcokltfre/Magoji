@@ -6,6 +6,7 @@ import typing as t
 
 from internal.context import Context
 
+
 class HelpMenu(menus.Menu):
     """An interactive help menu."""
 

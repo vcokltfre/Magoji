@@ -25,8 +25,6 @@ class Context(_BaseContext):
 
         await self.bot.db.update_config(self.guild.id, json.dumps(config))
 
-
-
     @contextlib.asynccontextmanager
     async def reaction_menu(
         self,
