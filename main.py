@@ -9,7 +9,7 @@ bot.load_extensions(
     "core.utility",
     "core.config",
     "utility.info",
-    "utility.tokens"
+    "utility.tokens",
     "moderation.moderation",
     "moderation.logging",
     "core.error_handler"
