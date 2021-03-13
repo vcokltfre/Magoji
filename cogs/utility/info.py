@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import find
 
 from datetime import datetime
 import textwrap
@@ -13,6 +14,9 @@ from utilities.helpers import EmbedHelper, convert_date
 from internal.context import Context
 
 GITHUB_REPO_URL = "https://github.com/vcokltfre/Magoji"
+
+MIN_EXTENSION_LENGTH = 4
+
 
 class SourceConverter(commands.Converter):
     """A Converter that converts a string to a Command, Cog or Extension."""
@@ -28,17 +32,24 @@ class SourceConverter(commands.Converter):
         if cog := ctx.bot.get_cog(argument):
             return cog
 
-        if extension := ctx.bot.extensions.get(argument):
-            return extension
+        if len(argument[:-3]) < MIN_EXTENSION_LENGTH:
+            raise commands.BadArgument("Not a valid Command, Cog nor Extension.")
+
+        if (
+            extension := find(
+                lambda ext: ext[0].endswith(argument[:-3]), ctx.bot.extensions.items()
+            )
+        ) and argument.endswith(".py"):
+            return extension[1]
+
         raise commands.BadArgument("Not a valid Command, Cog nor Extension.")
 
-        
+
 class AllInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
-    @commands.command(name='guild', aliases=['server'])
+    @commands.command(name="guild", aliases=["server"])
     @commands.guild_only()
     async def _guild(self, ctx: Context):
         """Sends information on the guild the command was invoked in."""
@@ -50,71 +61,80 @@ class AllInfo(commands.Cog):
         emojis = len(guild.emojis)
         members = guild.members
 
-        presences = {'online': 0,
-                     'offline': 0,
-                     'idle': 0,
-                     'dnd': 0}
+        presences = {"online": 0, "offline": 0, "idle": 0, "dnd": 0}
 
-        member_type = {'user': 0,
-                       'staff': 0,
-                       'bot': 0}
+        member_type = {"user": 0, "staff": 0, "bot": 0}
 
         for member in members:
             presences[str(member.status)] += 1
-            member_type[('user', 'bot')[member.bot]] += 1
-            if (member.guild_permissions.ban_members or
-                    member.guild_permissions.kick_members or
-                    member.guild_permissions.manage_messages):
-                member_type['staff'] += 1
+            member_type[("user", "bot")[member.bot]] += 1
+            if (
+                member.guild_permissions.ban_members
+                or member.guild_permissions.kick_members
+                or member.guild_permissions.manage_messages
+            ):
+                member_type["staff"] += 1
 
         online, offline, idle, dnd = presences.values()
         users, staff, bots = member_type.values()
 
-        value2 = textwrap.dedent(f"""
+        value2 = textwrap.dedent(
+            f"""
             Online: {online}
             Offline: {offline}
             Idle: {idle}
             DnD: {dnd}
-            """)
+            """
+        )
 
-        value1 = textwrap.dedent(f"""
+        value1 = textwrap.dedent(
+            f"""
             Members: {len(members)}
             Users: {users}
             Staff: {staff}
             Bots: {bots}
-            """)
+            """
+        )
 
-        value3 = textwrap.dedent(f"""
+        value3 = textwrap.dedent(
+            f"""
                                 Category Channels: {len(guild.categories)}
                                 Voice Channels: {len(guild.voice_channels)}
                                 Text Channels: {len(guild.text_channels)}
-                                """)
+                                """
+        )
 
-        embed = EmbedHelper(title=f"{guild.name.title()}'s Info",
-                            timestamp=datetime.utcnow(),
-                            description=textwrap.dedent(f"""
+        embed = EmbedHelper(
+            title=f"{guild.name.title()}'s Info",
+            timestamp=datetime.utcnow(),
+            description=textwrap.dedent(
+                f"""
                             **Owner:** {owner.mention}
                             **Created At:** {created}
                             **Emojis:** {emojis}
                             **Roles:** {num_roles}
-                                    """),
-
-                            thumbnail_url=guild.icon_url,
-
-                            footer_text=f"Command Invoked by {ctx.author}",
-                            footer_url=ctx.author.avatar_url,
-
-                            fields=[
-                                {"name": f"**Member Count:**", "value": value1},
-                                {"name": "**Presences**", "value": value2},
-                                {"name": f"**Total Channel Count:** {len(guild.channels)}", "value": value3, "inline": False}
-                            ]
-                            )
+                                    """
+            ),
+            thumbnail_url=guild.icon_url,
+            footer_text=f"Command Invoked by {ctx.author}",
+            footer_url=ctx.author.avatar_url,
+            fields=[
+                {"name": f"**Member Count:**", "value": value1},
+                {"name": "**Presences**", "value": value2},
+                {
+                    "name": f"**Total Channel Count:** {len(guild.channels)}",
+                    "value": value3,
+                    "inline": False,
+                },
+            ],
+        )
 
         await ctx.send(embed=embed)
 
-    @commands.command(name='user', aliases=['member'])
-    async def _user(self, ctx: Context, user: Union[discord.Member, discord.User] = None):
+    @commands.command(name="user", aliases=["member"])
+    async def _user(
+        self, ctx: Context, user: Union[discord.Member, discord.User] = None
+    ):
         """Sends info related to the user."""
 
         # TODO: Add comments
@@ -126,29 +146,34 @@ class AllInfo(commands.Cog):
 
         roles = user.roles[1:]
 
-        value = textwrap.dedent(f"""
+        value = textwrap.dedent(
+            f"""
                     Joined At: {joined}
                     Roles: {', '.join(r.mention for r in reversed(roles))}
-                """)
+                """
+        )
 
-        embed = EmbedHelper(title=f"{str(user).title()}'s Info",
-                            description=textwrap.dedent(f"""
+        embed = EmbedHelper(
+            title=f"{str(user).title()}'s Info",
+            description=textwrap.dedent(
+                f"""
                             **User:** {user.mention}
                             **ID:** {user.id}
                             **Bot:** {user.bot}
                             **Created At:** {created}
-                        """),
-
-                            thumbnail_url=user.avatar_url,
-                            fields=[{"name": "**Member Info**", "value": value}])
+                        """
+            ),
+            thumbnail_url=user.avatar_url,
+            fields=[{"name": "**Member Info**", "value": value}],
+        )
 
         await ctx.send(embed=embed)
 
     @commands.command(aliases=("src", "github", "git"), invoke_without_command=True)
-    async def source(
-        self, ctx: Context, *, source_item: SourceConverter = None
-    ):
-        """Shows the github repo for this bot, include a command, cog, or extension to got to that file."""
+    async def source(self, ctx: Context, *, source_item: SourceConverter = None):
+        """Shows the github repo for this bot, include a command, cog, or extension to got to that file.
+
+        If you want the source for an extension, it must end with `.py`."""
         if source_item is None:
             embed = discord.Embed(
                 title="Magoji's Github Repository",
@@ -171,9 +196,9 @@ class AllInfo(commands.Cog):
             filename = src.__file__
 
         lines, first_line_no = self.get_source_code(source_item)
+        lines_extension = ""
         if first_line_no:
             lines_extension = f"#L{first_line_no}-L{first_line_no+len(lines)-1}"
-        lines_extension = lines_extension or ""
 
         file_location = Path(filename).relative_to(Path.cwd()).as_posix()
 
@@ -205,7 +230,8 @@ class AllInfo(commands.Cog):
             description = source_object.short_doc
             title = f"Command: {source_object.qualified_name}"
         elif isinstance(source_object, ModuleType):
-            title = f"Extension: {source_object.__name__}"
+            title = f"Extension: {source_object.__name__}.py"
+            description = discord.Embed.Empty
         else:
             title = f"Cog: {source_object.qualified_name}"
             description = source_object.description.splitlines()[0]

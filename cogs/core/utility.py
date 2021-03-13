@@ -7,6 +7,7 @@ import psutil
 from internal.bot import Bot
 from internal.context import Context
 
+
 class Core(commands.Cog):
     """A set of core commands for Magoji."""
 
@@ -17,7 +18,7 @@ class Core(commands.Cog):
     def format_bytes(size):
         power = 2 ** 10
         n = 0
-        power_labels = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
+        power_labels = ["", "Ki", "Mi", "Gi", "Ti"]
         while size > power:
             size /= power
             n += 1

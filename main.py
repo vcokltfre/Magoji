@@ -12,7 +12,7 @@ bot.load_extensions(
     "utility.tokens",
     "moderation.moderation",
     "moderation.logging",
-    "core.error_handler"
+    "core.error_handler",
 )
 
 bot.run(getenv("TOKEN"))
