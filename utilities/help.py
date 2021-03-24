@@ -1,8 +1,10 @@
+from __future__ import annotations
+import typing as t
+
 import discord
 from discord.ext import commands, menus
 from discord.ext.commands import HelpCommand
 
-import typing as t
 
 from internal.context import Context
 
@@ -16,7 +18,7 @@ class HelpMenu(menus.Menu):
         self.title = pages[0].title
         super().__init__(**kwargs)
 
-    def should_add_reactions(self):
+    def should_add_reactions(self) -> bool:
         """Whether to add reactions to this menu session."""
         return len(self.pages) > 1
 
@@ -27,7 +29,7 @@ class HelpMenu(menus.Menu):
         return await ctx.reply(embed=self.pages[0])
 
     @menus.button("\N{BLACK LEFT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}")
-    async def on_track_previous(self, payload: discord.RawReactionActionEvent):
+    async def on_track_previous(self, payload: discord.RawReactionActionEvent) -> None:
         """A method to go back to the first page."""
         self.page = 0
         embed = self.pages[self.page]
@@ -40,7 +42,7 @@ class HelpMenu(menus.Menu):
             pass
 
     @menus.button("\N{BLACK LEFT-POINTING DOUBLE TRIANGLE}")
-    async def on_rewind(self, payload: discord.RawReactionActionEvent):
+    async def on_rewind(self, payload: discord.RawReactionActionEvent) -> None:
         """A method to go to the previous page."""
         self.page -= 1
         if self.page < 0:
@@ -56,7 +58,7 @@ class HelpMenu(menus.Menu):
             pass
 
     @menus.button("\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE}")
-    async def on_fast_forward(self, payload: discord.RawReactionActionEvent):
+    async def on_fast_forward(self, payload: discord.RawReactionActionEvent) -> None:
         """A method to go to the next page."""
         self.page += 1
         if self.page >= len(self.pages):
@@ -72,7 +74,7 @@ class HelpMenu(menus.Menu):
             pass
 
     @menus.button("\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}")
-    async def on_track_next(self, payload: discord.RawReactionActionEvent):
+    async def on_track_next(self, payload: discord.RawReactionActionEvent) -> None:
         """A method to go to the last page."""
         self.page = len(self.pages) - 1
         embed = self.pages[self.page]
@@ -84,13 +86,13 @@ class HelpMenu(menus.Menu):
             pass
 
     @menus.button("\N{WASTEBASKET}")
-    async def on_waste_bucket(self, payload: discord.RawReactionActionEvent):
+    async def on_waste_bucket(self, payload: discord.RawReactionActionEvent) -> None:
         """A method to stop the help session."""
         self.stop()
         await self.message.delete()
 
     @classmethod
-    def make_pages(cls, embed: discord.Embed, max_embeds: int, **options):
+    def make_pages(cls, embed: discord.Embed, max_embeds: int, **options) -> HelpMenu:
         """Make pages for the help menu session."""
         pages = []
         for page in range(0, len(embed.fields), max_embeds):
@@ -106,10 +108,10 @@ class HelpMenu(menus.Menu):
 class Help(HelpCommand):
     """Shows help for a command, group, or cog."""
 
-    def get_command_signature(self, command: commands.Command):
+    def get_command_signature(self, command: commands.Command) -> str:
         return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
 
-    async def send_bot_help(self, mapping):
+    async def send_bot_help(self, mapping) -> None:
         """Sends help for the bot."""
         embed = discord.Embed(
             title="Help",
@@ -132,7 +134,7 @@ class Help(HelpCommand):
         menu = HelpMenu.make_pages(embed, 5, clear_reactions_after=True)
         await menu.start(self.context, wait=True)
 
-    async def send_command_help(self, command: commands.Command):
+    async def send_command_help(self, command: commands.Command) -> None:
         embed = discord.Embed(
             title=self.get_command_signature(command), colour=0x87CEEB
         )
@@ -149,7 +151,7 @@ class Help(HelpCommand):
 
         await self.context.send(embed=embed)
 
-    async def send_cog_help(self, cog: commands.Cog):
+    async def send_cog_help(self, cog: commands.Cog) -> None:
         embed = discord.Embed(
             title=f"Help for the `{cog.qualified_name}` catagory.", colour=0x87CEEB
         )
@@ -165,7 +167,7 @@ class Help(HelpCommand):
         else:
             await self.context.send(embed=embed)
 
-    async def send_group_help(self, group: commands.Group):
+    async def send_group_help(self, group: commands.Group) -> None:
         embed = discord.Embed(
             title=f"Help for {group.name}.",
             description=group.help or "No help for this command.",
@@ -183,7 +185,7 @@ class Help(HelpCommand):
         )
         await self.context.send(embed=embed)
 
-    async def send_error_message(self, error):
+    async def send_error_message(self, error: str) -> None:
         embed = discord.Embed(
             title="Error", description=error, colour=discord.Colour.red()
         )

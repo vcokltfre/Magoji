@@ -1,5 +1,6 @@
 from discord.ext.commands import check, MissingPermissions
 from functools import wraps
+from typing import Callable
 from discord import Member
 
 from internal.context import Context
@@ -7,7 +8,7 @@ from internal.context import Context
 from utilities.exceptions import RoleHierarchyError
 
 
-def command_enabled(command: str):
+def command_enabled(command: str) -> Callable[[Context], bool]:
     async def predicate(ctx: Context):
         if not ctx.guild:
             return True
@@ -27,7 +28,7 @@ def command_enabled(command: str):
     return check(predicate)
 
 
-def role_hierarchy(*, ctx_arg: int = 1, member_arg: int = 2):
+def role_hierarchy(*, ctx_arg: int = 1, member_arg: int = 2) -> Callable[..., bool]:
     """Check if the invoker's top role is higher than the member's top role."""
 
     def decorator(func):

@@ -51,7 +51,7 @@ class AllInfo(commands.Cog):
 
     @commands.command(name="guild", aliases=["server"])
     @commands.guild_only()
-    async def _guild(self, ctx: Context):
+    async def _guild(self, ctx: Context) -> None:
         """Sends information on the guild the command was invoked in."""
         guild = ctx.guild
         owner = guild.owner
@@ -134,7 +134,7 @@ class AllInfo(commands.Cog):
     @commands.command(name="user", aliases=["member"])
     async def _user(
         self, ctx: Context, user: Union[discord.Member, discord.User] = None
-    ):
+    ) -> None:
         """Sends info related to the user."""
 
         # TODO: Add comments
@@ -170,7 +170,9 @@ class AllInfo(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=("src", "github", "git"), invoke_without_command=True)
-    async def source(self, ctx: Context, *, source_item: SourceConverter = None):
+    async def source(
+        self, ctx: Context, *, source_item: SourceConverter = None
+    ) -> None:
         """Shows the github repo for this bot, include a command, cog, or extension to got to that file.
 
         If you want the source for an extension, it must end with `.py`."""
@@ -180,7 +182,8 @@ class AllInfo(commands.Cog):
                 description=f"[Here's the github link!]({GITHUB_REPO_URL})",
                 colour=0x87CEEB,
             )
-            return await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
+            return
         embed = self.build_embed(source_item)
         await ctx.send(embed=embed)
 
@@ -218,7 +221,7 @@ class AllInfo(commands.Cog):
 
         return source
 
-    def build_embed(self, source_object):
+    def build_embed(self, source_object) -> discord.Embed:
         """Build embed based on source object."""
         url, location, first_line = self.get_github_url(source_object)
 
@@ -244,5 +247,5 @@ class AllInfo(commands.Cog):
         return embed
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(AllInfo(bot))

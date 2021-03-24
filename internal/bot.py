@@ -37,7 +37,7 @@ class Bot(commands.Bot):
         self.db = Database()
         self.idgen = IDGenerator()
 
-    def load_extensions(self, *exts):
+    def load_extensions(self, *exts: str) -> None:
         """Load a set of extensions, autoprefixed by 'cogs.'"""
         for ext in exts:
             try:
@@ -67,7 +67,8 @@ class Bot(commands.Bot):
 
         return guild_config[1]
 
-    async def get_context(self, message: Message, *, cls=Context):
+    async def get_context(self, message: Message, *, cls=Context) -> Context:
+        """Get the custom `Context`."""
         return await super().get_context(message, cls=cls)
 
 

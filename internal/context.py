@@ -18,7 +18,7 @@ class Context(_BaseContext):
             return json.loads(guild["config"])
         return {}
 
-    async def update_guild_config(self, **kwargs):
+    async def update_guild_config(self, **kwargs) -> None:
         """Updates the guild config."""
         config = await self.guild_config()
         config.update(kwargs)
