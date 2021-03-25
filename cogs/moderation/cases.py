@@ -1,6 +1,6 @@
 from discord.ext import commands
-from discord import Member, User, Embed, abc
-from typing import Union, List, Generator
+from discord import User, Embed
+from typing import List, Iterator
 
 from internal.bot import Bot
 from internal.context import Context
@@ -15,7 +15,7 @@ class Cases(commands.Cog):
         self.bot = bot
 
     @staticmethod
-    def chunks(lst: list, n: int) -> Generator[list, None, None]:
+    def chunks(lst: list, n: int) -> Iterator[list]:
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i : i + n]

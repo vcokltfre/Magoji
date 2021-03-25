@@ -4,7 +4,7 @@ import discord
 import asyncio
 import contextlib
 import json
-from typing import Any, Generator, Optional, Sequence, Union
+from typing import Any, Iterator, Optional, Sequence, Union
 
 
 class Context(_BaseContext):
@@ -32,7 +32,7 @@ class Context(_BaseContext):
         message: Optional[discord.Message] = None,
         prompt: discord.Embed,
         emojis: Sequence[Union[str, discord.Emoji]],
-    ) -> Generator[discord.Reaction, None, None]:
+    ) -> Iterator[discord.Reaction]:
         """Starts a reaction menu.
         Arguments ::
             All arguments are keyword-only.
