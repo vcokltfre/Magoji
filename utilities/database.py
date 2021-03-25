@@ -1,5 +1,5 @@
 from os import getenv
-from typing import List
+from typing import Any, List
 
 from asyncpg import Record, create_pool
 
@@ -19,15 +19,15 @@ class Database:
             password=getenv("DB_PASS", "password"),
         )
 
-    async def execute(self, query: str, *args) -> None:
+    async def execute(self, query: str, *args: Any) -> None:
         async with self.pool.acquire() as conn:
             await conn.execute(query, *args)
 
-    async def fetchrow(self, query: str, *args) -> Record:
+    async def fetchrow(self, query: str, *args: Any) -> Record:
         async with self.pool.acquire() as conn:
             return await conn.fetchrow(query, *args)
 
-    async def fetch(self, query: str, *args) -> List[Record]:
+    async def fetch(self, query: str, *args: Any) -> List[Record]:
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, *args)
 

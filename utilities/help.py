@@ -111,7 +111,7 @@ class Help(HelpCommand):
     def get_command_signature(self, command: commands.Command) -> str:
         return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
 
-    async def send_bot_help(self, mapping) -> None:
+    async def send_bot_help(self, mapping: t.Mapping[t.Optional[commands.Cog], t.List[commands.Command]]) -> None:
         """Sends help for the bot."""
         embed = discord.Embed(
             title="Help",

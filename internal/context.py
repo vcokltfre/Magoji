@@ -4,7 +4,7 @@ import discord
 import asyncio
 import contextlib
 import json
-from typing import Generator, Optional, Sequence, Union
+from typing import Any, Generator, Optional, Sequence, Union
 
 
 class Context(_BaseContext):
@@ -18,7 +18,7 @@ class Context(_BaseContext):
             return json.loads(guild["config"])
         return {}
 
-    async def update_guild_config(self, **kwargs) -> None:
+    async def update_guild_config(self, **kwargs: Any) -> None:
         """Updates the guild config."""
         config = await self.guild_config()
         config.update(kwargs)
