@@ -19,7 +19,11 @@ class StaffCommands(commands.Cog):
     @commands.has_permissions(kick_members=True)
     @role_hierarchy()
     async def _kick(
-        self, ctx: Context, member: discord.Member, *, reason: str = "No Reason Provided"
+        self,
+        ctx: Context,
+        member: discord.Member,
+        *,
+        reason: str = "No Reason Provided",
     ) -> None:
         """Kick the member out of the server."""
 
@@ -64,7 +68,11 @@ class StaffCommands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     async def _ban(
-        self, ctx: Context, member: discord.Member, *, reason: str = "No Reason Provided"
+        self,
+        ctx: Context,
+        member: discord.Member,
+        *,
+        reason: str = "No Reason Provided",
     ) -> None:
         """Permanently ban the member from the server."""
 

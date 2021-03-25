@@ -3,6 +3,7 @@ from functools import partial, wraps
 from concurrent.futures import Executor
 from typing import Callable, Optional
 
+
 def run_in_executor(executor: Optional[Executor] = None) -> Callable[..., Future]:
 
     loop = get_event_loop()
