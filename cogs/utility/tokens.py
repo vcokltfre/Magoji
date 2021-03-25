@@ -15,18 +15,18 @@ class Core(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message: Message):
+    async def on_message(self, message: Message) -> None:
         """Listen for tokens and reset them by uploading to a gist."""
 
         await self.scan(message)
 
     @commands.Cog.listener()
-    async def on_message_edit(self, before: Message, after: Message):
+    async def on_message_edit(self, before: Message, after: Message) -> None:
         """Listen for tokens and reset them by uploading to a gist."""
 
         await self.scan(after)
 
-    async def scan(self, message: Message):
+    async def scan(self, message: Message) -> None:
         """Scans a message for Discord tokens, if one is found uses Github Gist to reset it."""
         if isinstance(message.channel, DMChannel):
             return
@@ -52,5 +52,5 @@ class Core(commands.Cog):
         print(result)
 
 
-def setup(bot: Bot):
+def setup(bot: Bot) -> None:
     bot.add_cog(Core(bot))

@@ -20,13 +20,15 @@ class Config(commands.Cog):
         commands.has_permissions(manage_guild=True), commands.is_owner()
     )
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.guild)
-    async def prefix(self, ctx: Context, *, p: Optional[str]):
+    async def prefix(self, ctx: Context, *, p: Optional[str]) -> None:
         """Change Magoji's perfix per guild"""
         if not p:
-            return await ctx.send_help(ctx.invoked_with)
+            await ctx.send_help(ctx.invoked_with)
+            return
 
         if len(p) >= 255:
-            return await ctx.send("That's an invalid prefix!")
+            await ctx.send("That's an invalid prefix!")
+            return
 
         await self.bot.db.update_guild_prefix(ctx.guild.id, p)
         await ctx.send(f"Your prefix for this guild has been set to: `{p}`")
@@ -36,7 +38,7 @@ class Config(commands.Cog):
         commands.has_permissions(manage_guild=True), commands.is_owner()
     )
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.guild)
-    async def _log_channel(self, ctx: Context, channel: discord.TextChannel):
+    async def _log_channel(self, ctx: Context, channel: discord.TextChannel) -> None:
         """Sets the logging channel for your server."""
 
         await ctx.update_guild_config(log_channel=channel.id)

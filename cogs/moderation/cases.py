@@ -1,9 +1,11 @@
 from discord.ext import commands
-from discord import Member, User, Embed
-from typing import Union, List
+from discord import User, Embed
+from typing import List, Iterator
 
 from internal.bot import Bot
 from internal.context import Context
+
+from asyncpg import Record
 
 
 class Cases(commands.Cog):
@@ -13,12 +15,12 @@ class Cases(commands.Cog):
         self.bot = bot
 
     @staticmethod
-    def chunks(lst, n):
+    def chunks(lst: list, n: int) -> Iterator[list]:
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
             yield lst[i : i + n]
 
-    def cases_embeds(self, name: str, prefix: str, cases) -> List[Embed]:
+    def cases_embeds(self, name: str, prefix: str, cases: List[Record]) -> List[Embed]:
         """Generate a chunked list of embeds of a user's cases."""
 
         formatted_cases = []
@@ -53,15 +55,15 @@ class Cases(commands.Cog):
     @commands.has_guild_permissions(manage_messages=True)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     @commands.guild_only()
-    async def cases(self, ctx: Context, member: Union[User, Member, int]):
+    async def cases(self, ctx: Context, user: User) -> None:
         """Get moderation cases for a user."""
-        if isinstance(member, (User, Member)):
-            member = member.id
+        user = user.id
 
-        cases = await self.bot.db.fetch_cases(member, ctx.guild.id)
+        cases = await self.bot.db.fetch_cases(user, ctx.guild.id)
 
         if not cases:
-            return await ctx.send("No cases found for that user.")
+            await ctx.send("No cases found for that user.")
+            return
 
         for embed in self.cases_embeds(ctx.author, ctx.prefix, cases):
             await ctx.send(embed=embed)

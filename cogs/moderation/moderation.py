@@ -4,7 +4,6 @@ from discord.ext import commands
 from datetime import datetime, timedelta
 import textwrap
 from typing import Optional
-import asyncio
 
 from utilities.helpers import EmbedHelper, CustomTimeConverter, convert_date
 from utilities.checks import role_hierarchy
@@ -20,8 +19,12 @@ class StaffCommands(commands.Cog):
     @commands.has_permissions(kick_members=True)
     @role_hierarchy()
     async def _kick(
-        self, ctx: Context, member: discord.Member, *, reason="No Reason Provided"
-    ):
+        self,
+        ctx: Context,
+        member: discord.Member,
+        *,
+        reason: str = "No Reason Provided",
+    ) -> None:
         """Kick the member out of the server."""
 
         description = textwrap.dedent(
@@ -65,9 +68,13 @@ class StaffCommands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     async def _ban(
-        self, ctx: Context, member: discord.Member, *, reason="No Reason Provided"
-    ):
-        """Perminantly ban the member from the server."""
+        self,
+        ctx: Context,
+        member: discord.Member,
+        *,
+        reason: str = "No Reason Provided",
+    ) -> None:
+        """Permanently ban the member from the server."""
 
         description = textwrap.dedent(
             f"""
@@ -118,9 +125,8 @@ class StaffCommands(commands.Cog):
         length: CustomTimeConverter,
         *,
         reason="No Reason Provided",
-    ):
-
-        # TODO: add comments and docstrings
+    ) -> None:
+        """Temperarily ban this user for the time provided."""
 
         curtime = datetime.now()
         expires = curtime + length
@@ -169,7 +175,8 @@ class StaffCommands(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def clear(
         self, ctx: Context, channel: Optional[discord.TextChannel], amount: int
-    ):
+    ) -> None:
+        """Purge `amount` amount of messages in your channel or the channel you specify."""
         channel = channel or ctx.channel
 
         await ctx.send(f"now purging {amount} messages...", delete_after=1.5)
@@ -180,7 +187,10 @@ class StaffCommands(commands.Cog):
     @commands.command(name="unban")
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
-    async def _unban(self, ctx, user: discord.Object, *, reason="No Reason Provided"):
+    async def _unban(
+        self, ctx, user: discord.Object, *, reason="No Reason Provided"
+    ) -> None:
+        """Unban a user with the ID you provide."""
         try:
             cid = next(self.bot.idgen)
 
@@ -209,8 +219,10 @@ class StaffCommands(commands.Cog):
     @commands.command(aliases=["add_note", "notea", "notec"])
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
-    async def anote(self, ctx: Context, member: discord.Member, *, content: str):
-
+    async def anote(
+        self, ctx: Context, member: discord.Member, *, content: str
+    ) -> None:
+        """Add a note to the member you specify."""
         await ctx.send(f'Added note to member: {member} with the content:\n"{content}"')
 
         await self.bot.db.execute(

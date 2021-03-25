@@ -15,7 +15,7 @@ class Core(commands.Cog):
         self.bot = bot
 
     @staticmethod
-    def format_bytes(size):
+    def format_bytes(size) -> str:
         power = 2 ** 10
         n = 0
         power_labels = ["", "Ki", "Mi", "Gi", "Ti"]
@@ -25,12 +25,12 @@ class Core(commands.Cog):
         return f"{round(size, 3)}{power_labels[n]+'B'}"
 
     @staticmethod
-    def get_emoji(upper: float, value: float, above: str, below: str):
+    def get_emoji(upper: float, value: float, above: str, below: str) -> str:
         return above if value > upper else below
 
     @commands.command(name="info")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.channel)
-    async def info(self, ctx: Context):
+    async def info(self, ctx: Context) -> None:
         """Get info about Magoji."""
         desc = f"✅ Bot\n"
         desc += f"{self.get_emoji(0.150, self.bot.latency, ':x:', '✅')} Gateway ({round(self.bot.latency * 1000)}ms)\n\n"
@@ -41,7 +41,7 @@ class Core(commands.Cog):
 
     @commands.command(name="debug")
     @commands.is_owner()
-    async def debug(self, ctx: Context):
+    async def debug(self, ctx: Context) -> None:
         """Get debug info about Magoji."""
 
         env = getenv("ENV", "dev")
@@ -58,13 +58,13 @@ class Core(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: Context):
+    async def on_command_completion(self, ctx: Context) -> None:
         """Make sure that bot owners are always exempt from cooldowns."""
         if await self.bot.is_owner(ctx.author):
             ctx.command.reset_cooldown(ctx)
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         """Log READY events."""
         self.bot.logger.info("Bot is ready.")
 

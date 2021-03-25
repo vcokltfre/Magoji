@@ -1,12 +1,14 @@
+from __future__ import annotations
 import discord
 from discord.ext import commands
 from discord import Colour
 from datetime import datetime
-
 from typing import Optional, Union, List
 from datetime import timedelta
 from itertools import groupby
 from time import time
+
+from internal.context import Context
 
 
 class EmbedHelper(discord.Embed):
@@ -89,14 +91,14 @@ class EmbedHelper(discord.Embed):
                 self.add_field(name=name, value=value, inline=True)
 
     @classmethod
-    def from_exception(cls, exception: Exception):
+    def from_exception(cls, exception: Exception) -> EmbedHelper:
         return cls(
             title=f"⚠️ An Error Occurred.", description=str(exception), colour=0xE74C3C
         )
 
 
-def convert_date(date: datetime):
-    # TODO: Add docstring
+def convert_date(date: datetime) -> str:
+    """Convert a datetime object to a readable format."""
 
     return date.strftime(f"%A, %B %-d, %Y at %-I:%M {('A', 'P')[date == 0]}M UTC")
 
@@ -135,7 +137,7 @@ def get_timedelta(arg: str) -> timedelta:
 class CustomTimeConverter(commands.Converter):
     """Returns a timedelta object."""
 
-    async def convert(self, ctx, arg: str) -> timedelta:
+    async def convert(self, ctx: Context, arg: str) -> timedelta:
         return get_timedelta(arg)
 
 

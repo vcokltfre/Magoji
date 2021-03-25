@@ -1,5 +1,7 @@
-from asyncpg import create_pool
 from os import getenv
+from typing import Any, List
+
+from asyncpg import Record, create_pool
 
 
 class Database:
@@ -8,7 +10,7 @@ class Database:
     def __init__(self):
         self.guilds = {}
 
-    async def setup(self):
+    async def setup(self) -> None:
         self.pool = await create_pool(
             host=getenv("DB_HOST", "127.0.0.1"),
             port=getenv("DB_PORT", 5432),
@@ -17,19 +19,21 @@ class Database:
             password=getenv("DB_PASS", "password"),
         )
 
-    async def execute(self, query: str, *args):
+    async def execute(self, query: str, *args: Any) -> None:
         async with self.pool.acquire() as conn:
             await conn.execute(query, *args)
 
-    async def fetchrow(self, query: str, *args):
+    async def fetchrow(self, query: str, *args: Any) -> Record:
         async with self.pool.acquire() as conn:
             return await conn.fetchrow(query, *args)
 
-    async def fetch(self, query: str, *args):
+    async def fetch(self, query: str, *args: Any) -> List[Record]:
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, *args)
 
-    async def create_guild(self, id: int, prefix: str = ">", config: str = "{}"):
+    async def create_guild(
+        self, id: int, prefix: str = ">", config: str = "{}"
+    ) -> None:
         await self.execute(
             "INSERT INTO Guilds (id, prefix, config) VALUES ($1, $2, $3);",
             id,
@@ -37,7 +41,7 @@ class Database:
             config,
         )
 
-    async def update_guild_prefix(self, id: int, prefix: str):
+    async def update_guild_prefix(self, id: int, prefix: str) -> None:
         if not await self.fetch_guild(id):
             return await self.create_guild(id, prefix)
 
@@ -45,7 +49,7 @@ class Database:
             del self.guilds[id]
         await self.execute("UPDATE Guilds SET prefix = $1 WHERE id = $2;", prefix, id)
 
-    async def fetch_guild(self, id: int):
+    async def fetch_guild(self, id: int) -> Record:
         if id in self.guilds:
             return self.guilds[id]
 
@@ -53,14 +57,14 @@ class Database:
         self.guilds[id] = data
         return data
 
-    async def fetch_cases(self, userid: int, guildid: int):
+    async def fetch_cases(self, userid: int, guildid: int) -> List[Record]:
         return await self.fetch(
             "SELECT * FROM Cases WHERE userid = $1 AND guildid = $2 ORDER BY created_at;",
             userid,
             guildid,
         )
 
-    async def update_config(self, id: int, config: str):
+    async def update_config(self, id: int, config: str) -> None:
         if not await self.fetch_guild(id):
             return await self.create_guild(id, config=config)
 
