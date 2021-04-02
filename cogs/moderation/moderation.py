@@ -188,7 +188,7 @@ class StaffCommands(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     async def _unban(
-        self, ctx, user: discord.Object, *, reason="No Reason Provided"
+        self, ctx: Context, user: discord.Object, *, reason="No Reason Provided"
     ) -> None:
         """Unban a user with the ID you provide."""
         try:
