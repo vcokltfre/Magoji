@@ -14,6 +14,7 @@ bot.load_extensions(
     "moderation.moderation",
     "moderation.logging",
     "core.error_handler",
+    "utility.reminders",
 )
 
 
