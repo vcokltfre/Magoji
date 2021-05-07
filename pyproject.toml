@@ -6,7 +6,7 @@ authors = ["vcokltfre <vcokltfre@gmail.com>", "chili <chili@github.com>", "anand
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.9"
 "discord.py" = "1.7.1"
 pyyaml = "*"
 python-dotenv = "*"

@@ -3,7 +3,6 @@ from discord import Intents, Message
 from aiohttp import ClientSession
 from typing import Optional
 from dotenv import load_dotenv
-from os import getenv
 from logging import getLogger, INFO
 from traceback import format_exc
 
@@ -55,6 +54,7 @@ class Bot(commands.Bot):
         await super().login(*args, **kwargs)
 
     async def get_prefix(self, message: Message) -> str:
+        '''
         """Get a dynamic prefix for the bot."""
 
         if not message.guild:
@@ -66,21 +66,12 @@ class Bot(commands.Bot):
             return ">"
 
         return guild_config[1]
+        '''
+
+        return ">uwu< "
 
     async def get_context(self, message: Message, *, cls=Context) -> Context:
         """Get the custom `Context`."""
         return await super().get_context(message, cls=cls)
 
 
-if __name__ == "__main__":
-    bot = Bot()
-
-    bot.load_extension("jishaku")
-    bot.load_extensions(
-        "core.utility",
-        "core.config",
-        "utility.info",
-        "utility.tokens",
-    )
-
-    bot.run(getenv("TOKEN"))
