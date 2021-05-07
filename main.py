@@ -4,6 +4,7 @@ from internal.bot import Bot
 
 bot = Bot()
 
+
 bot.load_extension("jishaku")
 bot.load_extensions(
     "core.utility",
@@ -14,5 +15,6 @@ bot.load_extensions(
     "moderation.logging",
     "core.error_handler",
 )
+
 
 bot.run(getenv("TOKEN"))
