@@ -16,7 +16,7 @@ class ErrorHandler(commands.Cog):
         error = getattr(error, "original", error)
 
         if isinstance(error, CommandOnCooldown):
-            if self.bot.is_owner(ctx.author):
+            if await self.bot.is_owner(ctx.author):
                 await ctx.reinvoke()
                 return
 
