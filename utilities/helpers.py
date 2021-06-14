@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import time
 import discord
 from discord.ext import commands
 from discord import Colour
@@ -132,6 +134,38 @@ def get_timedelta(arg: str) -> timedelta:
             )  # convert h -> hours, m -> minutes and so on
 
     return timedelta(**dict(zip(units, amts)))
+
+
+def get_str_time_mapping(arg: str) -> str:
+    """returns the string equivalent of get_timedelta"""
+    unit_mapping = {
+        "h": "hours",
+        "hour": "hours",
+        "m": "minutes",
+        "minute": "minutes",
+        "s": "seconds",
+        "second": "seconds",
+        "d": "days",
+        "day": "days",
+        "M": "months",  # m already assigned for minutes
+        "y": "years",
+    }
+
+    arg_string = []
+    arg_int = []
+    for letter in arg:
+        if not letter.isdigit():
+            arg_string.append(letter)
+        else:
+            arg_int.append(letter)
+
+    arg = "".join(l for l in arg_string)
+    argint = "".join(i for i in arg_int)
+
+    return {
+        "unit": unit_mapping[arg],
+        "amount": argint,
+    }
 
 
 class CustomTimeConverter(commands.Converter):
